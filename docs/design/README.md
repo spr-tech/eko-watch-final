@@ -53,7 +53,7 @@ Check these against the source files before using them.
 Build these instead of what the design shows.
 
 1. **Ward name.** The design shows "Yaba ward (placeholder)" in the landing header, the landing footer, the sidebar and several page headers. Never show the word "placeholder" and never hard-code a ward name.
-   - Signed-in screens: show the ward name from the API (`WardView.name` for the user's `wardId`, from `listWards`). While it loads, show nothing in that spot, not a guess.
+   - Signed-in screens: show the ward name from the API (`WardView.wardName` for the user's `wardId`, from `listWards`). While it loads, show nothing in that spot, not a guess.
    - Landing page: remove the ward name from the header. `GET /wards` needs a signed-in user, so a signed-out visitor can't load it. In the footer and body copy, say "one Lagos ward" instead.
    - Report it to me if a signed-in user has no `wardId`.
 2. **Routes.** Use the table above, not the canvas labels.
@@ -63,6 +63,6 @@ Build these instead of what the design shows.
    - Network or server error: "We couldn't load this report. Check your connection, then try again." with Try again.
    Never say a report "may have been removed"; nothing deletes reports.
 5. **Photos on the landing and sign-in pages.** The design has a photo slot with "[LOCATION]" and "[PHOTO CREDIT]". Do not ship those words. Until I supply a photo I'm allowed to use, with its credit, use the plain brand-colour panel and no caption.
-6. **Operators and Reports.** The design hides Reports from operators, and `NoAccess.dc.html` shows an operator being refused. The backend lets every signed-in role read reports. Follow the design for now. This is an open question in `docs/decisions.md`; change it if the team decides otherwise.
+6. **Operators and Reports.** The design hides Reports from operators. We decided the opposite (see `docs/decisions.md`): operators get **Reports** in their sidebar and tab bar, after Today's streets and before Hazards. They see the list and report details read-only: no Confirm button, no "Report a problem" link or button, and no "You confirmed this" state. Reuse the ward office's read-only layout. `NoAccess.dc.html` stays the pattern for any page a role can't open, but its example (an operator refused Reports) no longer applies.
 7. **"You reported this".** Only build it if `reportedByMe` is added to `ReportView`. The current design does not show it.
 8. **Fit.** The boards are drawn at 1536 × 730, but that doesn't prove the content fits. Check each screen against the viewport rules in `CLAUDE.md` and report anything that needs scrolling.

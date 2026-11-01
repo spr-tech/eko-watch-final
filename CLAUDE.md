@@ -10,7 +10,7 @@ Built for the TeSA Cohort 6 capstone as Team 1's side project. FoodBridge is the
 
 - `docs/build.pdf`: the EkoWatch build plan (implementation baseline v1). The source of truth for every name, path, payload, enum, status code and error code.
 - `docs/intent/ekowatch.md`: the requirements from the capstone brief (pages 14 to 16).
-- `openapi.yaml`: the frontend's copy of the backend contract. Keep it synchronised with the backend team's version.
+- `openapi.json`: the frontend's copy of the deployed backend contract, saved from https://ekowatch-backend.onrender.com/v3/api-docs. Re-save it whenever the backend changes and commit the change with a note in `docs/decisions.md`.
 - `docs/decisions.md`: agreed decisions and recorded deviations from `docs/build.pdf`. Check before changing anything structural.
 - `docs/ai-log.md`: record of AI-assisted work and how it was checked.
 - `docs/design/README.md`: which design file maps to which route, every state each file contains, and the corrections that win over the design.
@@ -32,13 +32,14 @@ Precedence: the deployed backend's OpenAPI contract wins over `docs/build.pdf` f
 - Never fall back to fake data when a request fails. A failed request shows the error state.
 - Demo data lives only in the backend seeds, which Adedayo owns. If a screen needs data that does not exist in the backend, report it. Do not invent it.
 - If an endpoint this task needs is not deployed yet, or its response differs from `docs/build.pdf` section 8, stop and tell me. Do not build the screen against a guessed shape.
+- Exception: the open contract questions listed in `docs/decisions.md` ("Contract differences found in the deployed backend") do not block work. Build to what the deployed backend actually returns. Where the answer is still unknown (error codes, which fields can be null), handle it by HTTP status and treat the field as possibly `null`. Mark the spot with `// TODO(contract): <question>` and list every such TODO when you finish. Never fill the gap with invented data.
 
 ## Testing against the backend
 
 Before wiring any endpoint:
 
 1. Call it on the deployed backend with `curl`, signing in first with a demo account from the backend README. Send an `X-Request-ID` header.
-2. Compare the real response with `openapi.yaml` and `docs/build.pdf` section 8: field names, casing, enums, required and nullable fields, status codes and error bodies.
+2. Compare the real response with `openapi.json` and `docs/build.pdf` section 8: field names, casing, enums, required and nullable fields, status codes and error bodies.
 3. List every difference before writing code.
 
 After wiring a screen, walk its journey on the live backend and report what you saw: success, empty, validation error, wrong-role refusal (403), signed-out (401) and not-found (404) where they apply.
@@ -71,9 +72,9 @@ An unknown enum value from the server is an error to report, not something to ma
 
 Use these names and fields exactly as in `docs/build.pdf` section 8:
 
-- Auth and user: `CreateSessionRequest`, `CurrentUserView` (`userId`, `displayName`, `role`, `wardId`, `streetId`; the last two may be null) and `UpdatePreferencesRequest`.
-- Places: `WardView` and `StreetView` (with nullable `mapLocation`).
-- Photos and reports: `PhotoView`, `CreateReportRequest` and `ReportView`. `ReportView` includes `confirmationCount`, `confirmedByMe`, `lastEvidenceAt`, `floodStatus`, `expiresAt` and `locationPrecision: 'STREET'`.
+- Auth and user: `CreateSessionRequest`, `SessionView`, `CurrentUserView` (`userId`, `email`, `displayName`, `role`, `wardId`, `streetId`; the last two may be null) and `UpdatePreferencesRequest`.
+- Places: `WardView` (`wardId`, `wardName`) and `StreetView` (`streetId`, `wardId`, `streetName`, nullable `mapLocation`). The deployed backend uses `wardName` and `streetName`, not the build plan's `name`. Use the deployed names; the difference is logged in `docs/decisions.md`.
+- Photos and reports: `PhotoView` (`photoId`, `photoUrl`, `contentType`, `sizeBytes`, `createdAt`), `CreateReportRequest` and `ReportView`. `ReportView` includes `confirmationCount`, `confirmedByMe`, `lastEvidenceAt`, `floodStatus`, `expiresAt` and `locationPrecision: 'STREET'`.
 - Collections: `CollectionScheduleView` and `CollectionView`.
 - Ward views: `WardHazardsView`, `WardDashboardView` and `OperatorPerformanceView`.
 - Generic: `Page<T>` (`items`, zero-based `page`, `size`, `totalElements`, `totalPages`).
@@ -121,6 +122,8 @@ Query parameters and defaults follow `docs/build.pdf` section 8:
 
 Browser routes are not API paths. Keep them separate.
 
+Reports for each role: residents can browse, confirm and create. The ward office and operators see `/reports` and `/reports/:reportId` read-only, with no Confirm button and no way to create a report. Operators have Reports in their menu. See `docs/decisions.md`.
+
 ## Stack (same as FoodBridge; deviation from the build plan recorded in docs/decisions.md)
 
 - Vite + React + TypeScript (strict). No `any`.
@@ -155,8 +158,9 @@ Browser routes are not API paths. Keep them separate.
 
 ## Errors
 
-Errors arrive as `application/problem+json` with `type`, `title`, `status`, `code`, `detail`, `instance`, `requestId` and optional `fieldErrors`.
+Errors are meant to arrive as `application/problem+json` with `type`, `title`, `status`, `code`, `detail`, `instance`, `requestId` and optional `fieldErrors`.
 
+- The Swagger page documents no error responses, so confirm the real error shape with `curl` (a bad login, a wrong role, a missing report) before writing `src/services/errors.ts`, and report any difference from this section.
 - Map by `code` first, then by status, in `src/services/errors.ts`.
 - Show `fieldErrors` against their fields.
 - On 401, send the user to sign in. On 403, show a permission message.
@@ -167,8 +171,10 @@ Stable codes: `VALIDATION_FAILED`, `UNAUTHENTICATED`, `FORBIDDEN`, `RESOURCE_NOT
 ## Session
 
 - The session response is `{ accessToken, tokenType: 'Bearer', expiresAt, user }`.
-- Keep the token in memory (Redux state), as `docs/build.pdf` section 7 says. A reload or an expiry requires signing in again. Do not invent refresh endpoints.
-- If `docs/decisions.md` records a different choice, follow that instead.
+- Keep the session (token, `expiresAt` and user) in `sessionStorage` and mirror it in the Redux session slice, as in FoodBridge. It survives a page refresh and is cleared when the tab closes. This overrides the build plan's in-memory choice; see `docs/decisions.md` (2026-11-01, session storage).
+- Read it back on start-up, and treat it as signed out if `expiresAt` has passed.
+- On sign-out, a 401, or expiry, clear both `sessionStorage` and the slice, then send the user to `/login`.
+- Never put the token in `localStorage`, a cookie, the URL or a log. Do not invent refresh endpoints.
 
 ## Interface rules
 
@@ -242,8 +248,10 @@ Before saying a task is done, all four checks (lint, typecheck, test, build) mus
 
 ## Environment
 
-- `VITE_API_BASE_URL`: deployed backend base address including `/api/v1`. TODO: fill in when Esther shares the deployed URL.
-- Backend Swagger UI: TODO.
+- `VITE_API_BASE_URL`: `https://ekowatch-backend.onrender.com/api/v1`.
+- Backend Swagger UI: https://ekowatch-backend.onrender.com/swagger-ui/index.html. OpenAPI JSON: https://ekowatch-backend.onrender.com/v3/api-docs.
+- In local development, if the browser blocks requests because of CORS (Cross-Origin Resource Sharing), use a Vite dev proxy (`server.proxy` in `vite.config.ts`) that forwards `/api` to the backend. This only changes where requests go in development; it is not mock data. Production still needs the backend to allow the Qocent address, so report it.
+- The backend runs on Render's free tier, which sleeps when idle. The first request after a quiet spell can take up to a minute. Loading states must cope with that (say it's waking up after a few seconds, never spin forever), and a slow first `curl` is not a failure.
 - Never commit `.env`. Keep `.env.example` with variable names only.
 
 ## Deployment (Qocent Deploy, apps.qocent.com)

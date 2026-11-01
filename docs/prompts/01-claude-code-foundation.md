@@ -3,7 +3,7 @@ Use in Claude Code, opened in the eko-watch repository root, in plan mode (Shift
 ```
 Read CLAUDE.md, docs/intent/ekowatch.md, docs/build.pdf (sections 4, 7, 8 and 11),
 docs/decisions.md and docs/design/README.md before anything else.
-openapi.yaml does not exist yet; do not invent endpoints.
+openapi.json is the deployed backend contract; do not invent endpoints.
 
 Task: set up the foundation of the EkoWatch frontend. No real screens and no API
 endpoints yet. Just the base everything else will sit on. No mock data anywhere.
@@ -29,10 +29,10 @@ Scope:
    endpoints: () => ({}), tagTypes Report, Hazards, Dashboard, Schedule, CurrentUser.
    prepareHeaders adds X-Request-ID (new UUID per request) and the Bearer token from
    the session slice when present.
-7. src/app/store.ts, typed hooks, a session slice holding the token in memory only
+7. src/app/store.ts, typed hooks, a session slice backed by sessionStorage
    (CLAUDE.md "Session"), src/app/providers.tsx.
 8. src/types/ekowatch.ts with the four shared enums from CLAUDE.md, exactly as written.
-   Leave view types for later; they come from openapi.yaml.
+   Leave view types for later; they come from openapi.json.
 9. src/app/routes.tsx and router.tsx with every route from the CLAUDE.md routes table
    plus "/". Each route renders a placeholder page showing only its h1 and the page
    component name from the table, so I can click through. Role guards are a TODO.
