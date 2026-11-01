@@ -41,6 +41,20 @@ _None yet._
 - **To confirm:** the deployed backend actually lets operators call `GET /reports` and `GET /reports/{reportId}`. If it returns 403 for operators, this decision has to change on one side or the other.
 - **Proposed by:** Muizz · **Agreed by:** pending
 
+### 2026-11-01 · Form control border darker than the design
+- **Change:** input, select and outline-button borders use `#6B7B8D` (`--color-border-input` in `src/styles/tokens.css`) instead of the design's `#8A99AB`.
+- **Why:** WCAG 2.2 (1.4.11 Non-text Contrast) needs 3:1 for the edge of a form control. Measured: `#8A99AB` is 2.91:1 on white (`#FFFFFF`) and 2.70:1 on the page background (`#F4F7FA`), so both fail. `#6B7B8D` is 4.34:1 on white and 4.03:1 on the page background.
+- **Cost:** borders look slightly heavier than the design boards.
+- **Reverse if:** the design is updated with a border colour that reaches 3:1 on both backgrounds.
+- **Proposed by:** Muizz · **Agreed by:** pending
+
+### 2026-11-01 · Demonstration banner wording
+- **Change:** the banner reads "Demonstration data (simulated) · people and activity are fictional; place names are real", shortened on phones to "Demo data (simulated) · fictional people, real places". This is the design's wording. CLAUDE.md said "Demonstration data · names and activity are fictional" and now matches the design.
+- **Why:** the brief requires real place names and fictional people and activity, and asks for anything simulated to be labelled beside it. The design's wording says all three; the old line didn't say the place names are real.
+- **Cost:** a longer line; the phone version is shorter so it fits on one line at 390px.
+- **Reverse if:** the backend seed data stops being simulated, in which case "(simulated)" comes out.
+- **Proposed by:** Muizz · **Agreed by:** pending
+
 ## Contract differences found in the deployed backend (2026-11-01)
 
 Compared https://ekowatch-backend.onrender.com/v3/api-docs with the build plan. Needs Esther's answer; the frontend follows the deployed backend until then.
