@@ -189,7 +189,7 @@ Stable codes: `VALIDATION_FAILED`, `UNAUTHENTICATED`, `FORBIDDEN`, `RESOURCE_NOT
 - Every status shows text as well as colour. Use semantic headings, labelled inputs, visible focus, keyboard-operable map and list controls, and announced success and error messages.
 - Layouts must work on a phone, a tablet and a desktop.
 - The photo input uses `capture="environment"` as a hint only. Never claim gallery uploads are blocked.
-- Operator names in the data are fictional. Show the "Demonstration data · names and activity are fictional" banner.
+- Operator names in the data are fictional. Show the "Demonstration data (simulated) · people and activity are fictional; place names are real" banner ("Demo data (simulated) · fictional people, real places" on phones). See `docs/decisions.md` (2026-11-01, banner wording).
 
 ## Viewport and density
 

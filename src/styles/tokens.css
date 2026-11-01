@@ -1,0 +1,91 @@
+/*
+  EkoWatch design tokens, from docs/design/ekowatch/source/ (checked 2026-11-01).
+  A Tailwind v4 @theme block, so each token is a CSS variable and a utility
+  (bg-surface, text-text-muted, bg-sidebar, rounded-card).
+
+  The first group keeps every variable name from the shared component repo's tokens.css
+  (spr-tech/interface-eng-shared-components@f34b60c), so the copied components in
+  src/components/ui/ pick them up. Only the values are EkoWatch's. Never rename them.
+  The second group holds tokens only EkoWatch screens use.
+
+  Contrast (WCAG 2.2): text on page 15.9:1, muted text on page 6.6:1, primary on white
+  6.5:1, white on sidebar 6.9:1, input border on white 4.3:1 and on page 4.0:1.
+  If you change a colour, re-check it (4.5:1 for text, 3:1 for borders and focus).
+*/
+
+@theme static {
+  /* Surfaces */
+  --color-bg: #ffffff; /* cards, inputs, top bar, tab bar */
+  --color-surface: #f4f7fa; /* page background */
+  --color-surface-hover: #eef2f6; /* hover on outline buttons and rows */
+  --color-border: #cbd5e1; /* card edges and dividers */
+  /* Form control edges. The design uses #8A99AB (2.9:1 on white), under the 3:1 minimum;
+     see docs/decisions.md. */
+  --color-border-input: #6b7b8d;
+
+  /* Text */
+  --color-text: #0b1d2e;
+  --color-text-muted: #4a5a6b;
+
+  /* Roles: each filled colour has an "on" colour for text placed on top of it */
+  --color-primary: #1a5fa8; /* lagoon blue: links, focus, selected */
+  --color-primary-hover: #1a3550;
+  --color-on-primary: #ffffff;
+
+  --color-danger: #b71c1c;
+  --color-danger-hover: #8e1515;
+  --color-on-danger: #ffffff;
+
+  --color-success: #1e6b3a;
+  --color-on-success: #ffffff;
+
+  --color-warning: #7a4a00;
+  --color-on-warning: #ffffff;
+
+  /* Not in the EkoWatch design; the shared default, so info never looks like primary. */
+  --color-info: #0e7490;
+  --color-on-info: #ffffff;
+
+  /* Focus ring: 3px lagoon blue, 2px away from the element */
+  --color-focus: #1a5fa8;
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+
+  /* Shape */
+  --radius-sm: 8px;
+  --radius-md: 10px; /* buttons, inputs, nav items */
+  --radius: var(--radius-md); /* alias read by Dialog and Toast; change --radius-md instead */
+
+  /* Type */
+  --font-sans: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-sans);
+
+  /* ---- EkoWatch only ---- */
+
+  /* Light backgrounds behind icon tiles and pills, each paired with its role colour */
+  --color-primary-light: #e3eef9;
+  --color-success-light: #e3f5ea;
+  --color-warning-light: #fdf0d5; /* also the demo banner */
+  --color-danger-light: #fdecec;
+  --color-neutral-light: #eef1f5;
+
+  /* Sidebar and phone top bar (the design's default "Lagoon" theme) */
+  --color-sidebar: #0f5aa8;
+  --color-on-sidebar: #ffffff;
+  --color-wordmark-watch: #a8e0ff; /* "watch" in the wordmark */
+  --color-focus-on-dark: #ffd24a; /* focus ring inside the sidebar and phone top bar */
+
+  /* Green call to action ("Report a problem"); text on it is --color-text */
+  --color-action: #50c47c;
+  --color-action-hover: #43b26e;
+
+  /* "Fresh" evidence dot and progress */
+  --color-fresh: #2e8b57;
+
+  /* Loading skeleton */
+  --color-skeleton: #e3e8ee;
+  --color-skeleton-highlight: #f1f4f8;
+
+  /* Cards */
+  --radius-card: 14px;
+}
