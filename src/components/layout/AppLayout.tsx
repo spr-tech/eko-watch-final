@@ -1,6 +1,7 @@
 // The signed-in frame for every route except / and /login.
-// Desktop: banner, blue sidebar and white top bar. Phone: banner, blue top bar and a
-// bottom tab bar. The switch is CSS only (md:), so nothing waits on JavaScript.
+// Desktop: blue sidebar, white top bar, and the demo notice below the page content in
+// the main column. Phone: blue top bar, the demo notice, then the bottom tab bar, so the
+// notice is never hidden behind it. The switch is CSS only (md:).
 import { Outlet } from 'react-router'
 import { DemoBanner } from '@/components/layout/DemoBanner'
 import { PhoneTopBar } from '@/components/layout/PhoneTopBar'
@@ -17,7 +18,6 @@ export function AppLayout() {
   return (
     <div className="flex min-h-dvh flex-col">
       <SkipLink targetId={MAIN_ID} />
-      <DemoBanner />
       <div className="flex flex-1">
         <Sidebar role={role} />
         <div className="flex min-w-0 flex-1 flex-col">
@@ -30,6 +30,7 @@ export function AppLayout() {
           >
             <Outlet />
           </main>
+          <DemoBanner />
           <TabBar role={role} />
         </div>
       </div>
