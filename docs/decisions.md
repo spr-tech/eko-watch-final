@@ -55,6 +55,13 @@ _None yet._
 - **Reverse if:** the backend seed data stops being simulated, in which case "(simulated)" comes out.
 - **Proposed by:** Muizz · **Agreed by:** pending
 
+### 2026-11-01 · Demo data notice moved from top banner to footer
+- **Change:** the demonstration data notice is now a quiet footer below the page content (13px muted text, centred, a thin top border, no coloured strip) instead of a yellow banner across the top. On desktop it sits in the main column, not under the sidebar. On phones it sits above the bottom tab bar. The wording is unchanged (see "Demonstration banner wording" above).
+- **Why:** the top banner pushed the app down and took attention from the content.
+- **Cost:** on long pages the notice can be below the fold. Other in-place labels, such as "Operator names are fictional", stay where they are.
+- **Reverse if:** an assessor or facilitator says the label isn't visible enough.
+- **Proposed by:** Muizz · **Agreed by:** pending
+
 ## Contract differences found in the deployed backend (2026-11-01)
 
 Compared https://ekowatch-backend.onrender.com/v3/api-docs with the build plan. Needs Esther's answer; the frontend follows the deployed backend until then.
