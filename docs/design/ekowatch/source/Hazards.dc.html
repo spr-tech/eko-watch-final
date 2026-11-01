@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hazards</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A5FA8}a:hover{color:#0B1D2E}
+.ew :focus-visible{outline:3px solid #1A5FA8;outline-offset:2px}
+.ew .on-dark :focus-visible{outline-color:var(--ring)}
+.ew .nav-link{transition:background .15s ease}
+.ew .nav-link:hover{background:rgba(255,255,255,.14)}
+.ew .btn-green:hover{background:#43B26E}
+.ew .btn-navy:hover{background:#1A3550}
+.ew .btn-line:hover{background:#EEF2F6}
+.ew .row-card{transition:border-color .15s ease,box-shadow .15s ease}
+.ew .row-card:hover{border-color:#9FB3C8;box-shadow:0 6px 16px rgba(11,29,46,.06)}
+.ew input,.ew select,.ew textarea,.ew button{font-family:inherit}
+.ew button:disabled{cursor:not-allowed;opacity:.55}
+.ew .phone-only{display:none}
+.ew .banner-short{display:none}
+.vh{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@keyframes ew-sk{from{background-position:200% 0}to{background-position:-200% 0}}
+.sk{display:block;border-radius:8px;background:linear-gradient(90deg,#E3E8EE 25%,#F1F4F8 50%,#E3E8EE 75%);background-size:200% 100%;animation:ew-sk 1.4s linear infinite}
+@keyframes ew-toast{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ew-toast{animation:ew-toast .35s ease-out both}
+@keyframes ew-bump{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+.ew-bump{animation:ew-bump .4s ease-out}
+.ew .mk{transition:transform .15s ease}
+.ew .mk:hover,.ew .mk:focus-visible{transform:scale(1.12)}
+@media (max-width:760px){
+  .ew .side,.ew .topbar{display:none !important}
+  .ew .phone-only{display:flex}
+  .ew .banner-long{display:none}.ew .banner-short{display:inline}
+  .ew .main-pad{padding:16px 16px 24px !important}
+  .ew .hide-sm{display:none !important}
+  .ew .stack-sm{flex-direction:column !important;align-items:stretch !important}
+}
+@media (prefers-reduced-motion:reduce){.ew *{animation:none !important;transition:none !important}}
+
+</style>
+</helmet>
+<div class="ew" style="font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #0B1D2E; background: #F4F7FA; min-height: 100vh; display: flex; flex-direction: column; font-size: 15px">
+<div style="background: #FDF0D5; color: #7A4A00; font-size: 14px; font-weight: 700; text-align: center; padding: 4px 16px; line-height: 1.4">
+<span class="banner-long">Demonstration data (simulated) · people and activity are fictional; place names are real</span>
+<span class="banner-short">Demo data (simulated) · fictional people, real places</span>
+</div>
+<div style="flex: 1 1 auto; display: flex; align-items: stretch">
+<aside class="side on-dark" style="flex: none; width: 232px; background: {{t.bg}}; color: #FFFFFF; --ring: {{t.ring}}; display: flex; flex-direction: column; gap: 18px; padding: 18px 14px; box-sizing: border-box">
+<a href="Reports.dc.html" aria-label="EkoWatch home" style="display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 0 4px; border-radius: 8px"><img src="/_blob/15a57f253fea09bdb3a91f9924af720e" alt="" style="width: 40px; height: 33px; display: block"><span style="font-size: 25px; font-weight: 800; letter-spacing: -0.5px; line-height: 1"><span style="color: #FFFFFF">eko</span><span style="color: {{t.watch}}">watch</span></span></a>
+<a href="ReportNew.dc.html" class="btn-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer; width: 100%; box-sizing: border-box"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Report a problem</a>
+<nav aria-label="Main"><ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px"><li><a href="Reports.dc.html" class="nav-link" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3.5 6h.01"></path><path d="M3.5 12h.01"></path><path d="M3.5 18h.01"></path></svg>Reports</a></li><li><a href="Hazards.dc.html" aria-current="page" class="nav-link" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; background: #F4F7FA; color: #0B1D2E; font-weight: 800; font-size: 15px; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9 16H3z"></path><path d="M12 10v4.5"></path><path d="M12 17.2h.01"></path></svg>Hazards</a></li><li><a href="MyStreet.dc.html" class="nav-link" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>My street</a></li></ul></nav>
+</aside>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+<div class="phone-only on-dark" style="align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; background: {{t.bg}}; color: #FFFFFF; --ring: {{t.ring}}">
+<a href="Reports.dc.html" aria-label="EkoWatch home" style="display: flex; align-items: center; gap: 8px; text-decoration: none; border-radius: 8px"><img src="/_blob/15a57f253fea09bdb3a91f9924af720e" alt="" style="width: 34px; height: 28px; display: block"><span style="font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1"><span style="color: #FFFFFF">eko</span><span style="color: {{t.watch}}">watch</span></span></a>
+<button type="button" aria-label="Account: Ada, Demo resident. Open menu" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.12); color: #FFFFFF; font-size: 14px; font-weight: 800; cursor: pointer">AD</button>
+</div>
+<div class="topbar" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; padding: 0 32px; background: #FFFFFF; border-bottom: 1px solid #CBD5E1">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: #4A5A6B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Yaba ward (placeholder)</span>
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; font-size: 13px; font-weight: 800">AD</span>
+<span style="display: flex; flex-direction: column; line-height: 1.25"><span style="font-size: 15px; font-weight: 800; color: #0B1D2E">Ada</span><span style="font-size: 13px; font-weight: 600; color: #4A5A6B">Demo resident</span></span>
+<a href="SignIn.dc.html" class="btn-line" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer; box-sizing: border-box; min-height: 40px; margin-left: 4px">Sign out</a>
+</div>
+</div>
+<main class="main-pad" style="flex: 1 1 auto; width: 100%; max-width: 1180px; box-sizing: border-box; padding: 24px 32px 40px">
+<div class="stack-sm" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 16px; margin-bottom: 18px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<h1 style="margin: 0; font-size: clamp(1.55rem, 2.2vw, 1.9rem); font-weight: 800; letter-spacing: -0.6px; line-height: 1.15">Hazards</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #4A5A6B">Flooded roads and blocked drains reported in the ward.</p><p style="margin: 4px 0 0; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #4A5A6B"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: #2E8B57"></span>Newest report: 12 min ago</p>
+</div>
+
+</div><sc-if value="{{showSeg}}" hint-placeholder-val="{{ true }}"><div class="stack-sm" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 14px">
+<div role="group" aria-label="View" style="display: inline-flex; padding: 4px; border-radius: 12px; background: #E3E8EE; gap: 4px">
+<button type="button" aria-pressed="{{listPressed}}" onClick="{{showList}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9px; background: {{listBg}}; color: #0B1D2E; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: {{listShadow}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3.5 6h.01"></path><path d="M3.5 12h.01"></path><path d="M3.5 18h.01"></path></svg>List</button>
+<button type="button" aria-pressed="{{mapPressed}}" onClick="{{showMap}}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 0; border-radius: 9px; background: {{mapBg}}; color: #0B1D2E; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: {{mapShadow}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4l-6 2.5v13.5l6-2.5l6 2.5l6-2.5V4l-6 2.5z"></path><path d="M9 4v13.5"></path><path d="M15 6.5V20"></path></svg>Map</button>
+</div>
+<span style="display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: #4A5A6B"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Shown at street level, not the exact spot</span>
+</div></sc-if><sc-if value="{{showUnavail}}" hint-placeholder-val="{{ false }}"><div role="status" style="display: flex; gap: 12px; padding: 14px 16px; margin-bottom: 14px; border-radius: 12px; background: #FDF0D5; color: #5C3800; font-size: 15px; line-height: 1.5"><span style="flex: none; margin-top: 2px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0"></path><path d="M5.5 12.5a10 10 0 0 1 13 0"></path><path d="M9 16a5 5 0 0 1 6 0"></path><path d="M12 19.5h.01"></path><path d="M3 3l18 18"></path></svg></span><span><strong>The map can't load right now.</strong> You may be offline, or the map service isn't responding. Every report is in the list below.</span></div></sc-if><sc-if value="{{showListView}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 18px"><section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 800">Flooded roads</h2>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px"><sc-for list="{{floods}}" as="h" hint-placeholder-count="3"><li class="row-card" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px">
+<sc-if value="{{h.is_flood}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: #E3EEF9; color: #1A5FA8"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9q3-3 6 0t6 0t6 0"></path><path d="M3 14q3-3 6 0t6 0t6 0"></path><path d="M3 19q3-3 6 0t6 0t6 0"></path></svg></span></sc-if><sc-if value="{{h.is_drain}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: #E3EEF9; color: #1A5FA8"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="10" rx="2"></rect><path d="M7 5v10M11 5v10M15 5v10M19 5v10"></path><path d="M6 19h4M14 19h4"></path></svg></span></sc-if>
+<span style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px"><a href="ReportDetail.dc.html" style="font-size: 16px; font-weight: 800; color: #0B1D2E; text-decoration: none">{{h.label}}, {{h.street}}</a><sc-if value="{{h.current}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: 999px; background: #E3F5EA; color: #1E6B3A; font-size: 13px; font-weight: 800; white-space: nowrap"><span style="width: 7px; height: 7px; border-radius: 50%; background: #1E6B3A"></span>Current</span></sc-if><sc-if value="{{h.expired}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: 999px; background: #EEF1F5; color: #4A5A6B; font-size: 13px; font-weight: 800; white-space: nowrap"><span style="width: 7px; height: 7px; border-radius: 50%; background: #4A5A6B"></span>Expired</span></sc-if></span>
+<span style="font-size: 14px; color: #4A5A6B">{{h.countText}}, last confirmed {{h.last}}</span>
+<sc-if value="{{h.hasExpiry}}" hint-placeholder-val="{{ false }}"><span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: {{h.expiryColour}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{h.expiry}}</span></sc-if>
+</span>
+</li></sc-for></ul>
+</section><section style="display: flex; flex-direction: column; gap: 8px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 800">Blocked drains</h2>
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px"><sc-for list="{{drains}}" as="h" hint-placeholder-count="3"><li class="row-card" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px">
+<sc-if value="{{h.is_flood}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: #E3EEF9; color: #1A5FA8"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9q3-3 6 0t6 0t6 0"></path><path d="M3 14q3-3 6 0t6 0t6 0"></path><path d="M3 19q3-3 6 0t6 0t6 0"></path></svg></span></sc-if><sc-if value="{{h.is_drain}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: #E3EEF9; color: #1A5FA8"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="10" rx="2"></rect><path d="M7 5v10M11 5v10M15 5v10M19 5v10"></path><path d="M6 19h4M14 19h4"></path></svg></span></sc-if>
+<span style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span style="display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px"><a href="ReportDetail.dc.html" style="font-size: 16px; font-weight: 800; color: #0B1D2E; text-decoration: none">{{h.label}}, {{h.street}}</a><sc-if value="{{h.current}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: 999px; background: #E3F5EA; color: #1E6B3A; font-size: 13px; font-weight: 800; white-space: nowrap"><span style="width: 7px; height: 7px; border-radius: 50%; background: #1E6B3A"></span>Current</span></sc-if><sc-if value="{{h.expired}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: 999px; background: #EEF1F5; color: #4A5A6B; font-size: 13px; font-weight: 800; white-space: nowrap"><span style="width: 7px; height: 7px; border-radius: 50%; background: #4A5A6B"></span>Expired</span></sc-if></span>
+<span style="font-size: 14px; color: #4A5A6B">{{h.countText}}, last confirmed {{h.last}}</span>
+<sc-if value="{{h.hasExpiry}}" hint-placeholder-val="{{ false }}"><span style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: {{h.expiryColour}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{h.expiry}}</span></sc-if>
+</span>
+</li></sc-for></ul>
+</section></div></sc-if><sc-if value="{{showMapView}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: stretch">
+<div style="flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column">
+<div role="group" aria-label="Map of hazards in the ward" style="position: relative; height: clamp(300px, 52vh, 400px); border-radius: 14px; overflow: hidden; border: 1px solid #CBD5E1">
+<svg aria-hidden="true" viewBox="0 0 1000 560" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%">
+<rect width="1000" height="560" fill="#E8EDF2"></rect>
+<rect x="760" y="300" width="200" height="160" rx="8" fill="#DCE8DA"></rect>
+<g stroke="#FFFFFF" stroke-linecap="round" fill="none">
+<path d="M280 0L340 560" stroke-width="22"></path>
+<path d="M0 168L1000 168" stroke-width="18"></path>
+<path d="M0 347L1000 347" stroke-width="14"></path>
+<path d="M680 0L680 560" stroke-width="14"></path>
+<path d="M400 560L900 403" stroke-width="16"></path>
+<path d="M750 0L1000 140" stroke-width="14"></path>
+<path d="M90 0L90 560" stroke-width="8"></path><path d="M500 168L500 347" stroke-width="8"></path><path d="M0 470L320 470" stroke-width="8"></path>
+</g>
+</svg><span aria-hidden="true" style="position: absolute; left: 25%; top: 12%; transform: translate(-50%,-50%) rotate(84deg); font-size: 12px; font-weight: 800; color: #4A5A6B; letter-spacing: 0.2px; white-space: nowrap; background: rgba(232,237,242,0.85); padding: 1px 4px; border-radius: 4px">Herbert Macaulay Way</span><span aria-hidden="true" style="position: absolute; left: 16%; top: 30%; transform: translate(-50%,-50%) rotate(0deg); font-size: 12px; font-weight: 800; color: #4A5A6B; letter-spacing: 0.2px; white-space: nowrap; background: rgba(232,237,242,0.85); padding: 1px 4px; border-radius: 4px">Commercial Avenue</span><span aria-hidden="true" style="position: absolute; left: 16%; top: 62%; transform: translate(-50%,-50%) rotate(0deg); font-size: 12px; font-weight: 800; color: #4A5A6B; letter-spacing: 0.2px; white-space: nowrap; background: rgba(232,237,242,0.85); padding: 1px 4px; border-radius: 4px">Hughes Avenue</span><span aria-hidden="true" style="position: absolute; left: 71%; top: 74%; transform: translate(-50%,-50%) rotate(90deg); font-size: 12px; font-weight: 800; color: #4A5A6B; letter-spacing: 0.2px; white-space: nowrap; background: rgba(232,237,242,0.85); padding: 1px 4px; border-radius: 4px">Montgomery Road</span><span aria-hidden="true" style="position: absolute; left: 57%; top: 95%; transform: translate(-50%,-50%) rotate(-17deg); font-size: 12px; font-weight: 800; color: #4A5A6B; letter-spacing: 0.2px; white-space: nowrap; background: rgba(232,237,242,0.85); padding: 1px 4px; border-radius: 4px">Iwaya Road</span><span aria-hidden="true" style="position: absolute; left: 88%; top: 5%; transform: translate(-50%,-50%) rotate(29deg); font-size: 12px; font-weight: 800; color: #4A5A6B; letter-spacing: 0.2px; white-space: nowrap; background: rgba(232,237,242,0.85); padding: 1px 4px; border-radius: 4px">Akoka Road</span><sc-for list="{{markers}}" as="m" hint-placeholder-count="6">
+<button type="button" class="mk" onClick="{{m.pick}}" aria-pressed="{{m.pressed}}" aria-label="{{m.aria}}" style="position: absolute; left: {{m.x}}; top: {{m.y}}; margin: -20px 0 0 -20px; width: 40px; height: 40px; border-radius: 50%; border: {{m.border}}; background: {{m.bg}}; color: {{m.fg}}; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-shadow: 0 4px 10px rgba(11,29,46,.25)">
+<sc-if value="{{m.is_flood}}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9q3-3 6 0t6 0t6 0"></path><path d="M3 14q3-3 6 0t6 0t6 0"></path><path d="M3 19q3-3 6 0t6 0t6 0"></path></svg></sc-if>
+<sc-if value="{{m.is_drain}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="10" rx="2"></rect><path d="M7 5v10M11 5v10M15 5v10M19 5v10"></path><path d="M6 19h4M14 19h4"></path></svg></sc-if>
+</button>
+</sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; padding-top: 8px; font-size: 14px; color: #4A5A6B"><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; border-radius: 50%; background: #1A5FA8"></span>Current</span><span style="display: inline-flex; align-items: center; gap: 6px"><span style="width: 14px; height: 14px; border-radius: 50%; background: #FFFFFF; border: 2px dashed #4A5A6B; box-sizing: border-box"></span>Expired</span><span>Every marker also says Current or Expired when selected.</span></div>
+</div>
+<aside aria-live="polite" style="flex: 1 1 260px; min-width: 0; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px">
+<span style="display: flex; align-items: center; gap: 10px"><sc-if value="{{sel.is_flood}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: #E3EEF9; color: #1A5FA8"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9q3-3 6 0t6 0t6 0"></path><path d="M3 14q3-3 6 0t6 0t6 0"></path><path d="M3 19q3-3 6 0t6 0t6 0"></path></svg></span></sc-if><sc-if value="{{sel.is_drain}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: #E3EEF9; color: #1A5FA8"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="10" rx="2"></rect><path d="M7 5v10M11 5v10M15 5v10M19 5v10"></path><path d="M6 19h4M14 19h4"></path></svg></span></sc-if><span style="display: flex; flex-direction: column"><span style="font-size: 16px; font-weight: 800">{{sel.label}}</span><span style="font-size: 15px; color: #4A5A6B">{{sel.street}}</span></span></span>
+<span style="display: flex"><sc-if value="{{sel.current}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: 999px; background: #E3F5EA; color: #1E6B3A; font-size: 13px; font-weight: 800; white-space: nowrap"><span style="width: 7px; height: 7px; border-radius: 50%; background: #1E6B3A"></span>Current</span></sc-if><sc-if value="{{sel.expired}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px; border-radius: 999px; background: #EEF1F5; color: #4A5A6B; font-size: 13px; font-weight: 800; white-space: nowrap"><span style="width: 7px; height: 7px; border-radius: 50%; background: #4A5A6B"></span>Expired</span></sc-if></span>
+<span style="font-size: 15px">{{sel.countText}}, last confirmed {{sel.last}}</span>
+<sc-if value="{{sel.hasExpiry}}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; font-weight: 700; color: {{sel.expiryColour}}">{{sel.expiry}}</span></sc-if>
+<a href="ReportDetail.dc.html" class="btn-navy" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: #0B1D2E; color: #FFFFFF; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer; margin-top: 4px">Open report</a>
+<span style="font-size: 13px; color: #4A5A6B">Tab through the markers, then press Enter to see one here.</span>
+</aside>
+</div></sc-if><sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}"><div aria-busy="true"><span class="vh" role="status">Loading hazards</span><ul aria-hidden="true" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px"><li style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 16px 18px; display: flex; gap: 14px; align-items: center"><span class="sk" style="width: 44px; height: 44px; border-radius: 12px; flex: none"></span><span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px"><span class="sk" style="width: 40%; height: 14px"></span><span class="sk" style="width: 70%; height: 12px"></span></span><span class="sk hide-sm" style="width: 90px; height: 40px; flex: none; border-radius: 10px"></span></li><li style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 16px 18px; display: flex; gap: 14px; align-items: center"><span class="sk" style="width: 44px; height: 44px; border-radius: 12px; flex: none"></span><span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px"><span class="sk" style="width: 40%; height: 14px"></span><span class="sk" style="width: 70%; height: 12px"></span></span><span class="sk hide-sm" style="width: 90px; height: 40px; flex: none; border-radius: 10px"></span></li><li style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 16px 18px; display: flex; gap: 14px; align-items: center"><span class="sk" style="width: 44px; height: 44px; border-radius: 12px; flex: none"></span><span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px"><span class="sk" style="width: 40%; height: 14px"></span><span class="sk" style="width: 70%; height: 12px"></span></span><span class="sk hide-sm" style="width: 90px; height: 40px; flex: none; border-radius: 10px"></span></li><li style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 16px 18px; display: flex; gap: 14px; align-items: center"><span class="sk" style="width: 44px; height: 44px; border-radius: 12px; flex: none"></span><span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px"><span class="sk" style="width: 40%; height: 14px"></span><span class="sk" style="width: 70%; height: 12px"></span></span><span class="sk hide-sm" style="width: 90px; height: 40px; flex: none; border-radius: 10px"></span></li><li style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 16px 18px; display: flex; gap: 14px; align-items: center"><span class="sk" style="width: 44px; height: 44px; border-radius: 12px; flex: none"></span><span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px"><span class="sk" style="width: 40%; height: 14px"></span><span class="sk" style="width: 70%; height: 12px"></span></span><span class="sk hide-sm" style="width: 90px; height: 40px; flex: none; border-radius: 10px"></span></li></ul></div></sc-if><sc-if value="{{isEmpty}}" hint-placeholder-val="{{ false }}"><div style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 28px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 14px; background: #E3EEF9; color: #1A5FA8"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9q3-3 6 0t6 0t6 0"></path><path d="M3 14q3-3 6 0t6 0t6 0"></path><path d="M3 19q3-3 6 0t6 0t6 0"></path></svg></span>
+<p style="margin: 0; font-size: 18px; font-weight: 800">No current flood reports in this ward.</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.55; color: #4A5A6B; max-width: 36em">This doesn't mean the roads are safe. It only means no one has reported or reconfirmed a flood in the last 6 hours. If you see flooding, report it.</p>
+<p style="margin: 0; font-size: 15px; color: #4A5A6B">No blocked-drain reports either.</p>
+<a href="ReportNew.dc.html" class="btn-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer; margin-top: 4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Report a problem</a>
+</div></sc-if><sc-if value="{{isError}}" hint-placeholder-val="{{ false }}"><div role="alert" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 14px; background: #FDECEC; color: #B71C1C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5"></path><path d="M12 16.5h.01"></path></svg></span>
+<p style="margin: 0; font-size: 18px; font-weight: 800">We couldn't load hazards.</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #4A5A6B; max-width: 34em">Check your connection, then try again.</p>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 6px"><button type="button" class="btn-navy" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: #0B1D2E; color: #FFFFFF; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg>Try again</button></div>
+</div></sc-if>
+</main>
+<nav aria-label="Main" class="phone-only" style="position: sticky; bottom: 0; z-index: 10; align-items: center; gap: 6px; padding: 6px 10px 10px; background: #FFFFFF; border-top: 1px solid #CBD5E1"><a href="Reports.dc.html" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; color: #0B1D2E; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3.5 6h.01"></path><path d="M3.5 12h.01"></path><path d="M3.5 18h.01"></path></svg>Reports</a><a href="Hazards.dc.html" aria-current="page" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; background: #0B1D2E; color: #FFFFFF; font-weight: 800"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9 16H3z"></path><path d="M12 10v4.5"></path><path d="M12 17.2h.01"></path></svg>Hazards</a><a href="ReportNew.dc.html" class="btn-green" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; background: #50C47C; color: #0B1D2E; font-weight: 800"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Report</a><a href="MyStreet.dc.html" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; color: #0B1D2E; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>My street</a></nav>
+</div>
+</div>
+<sc-if value="{{isSession}}" hint-placeholder-val="{{ false }}">
+<div style="position: fixed; inset: 0; z-index: 40; background: rgba(11,29,46,0.6); display: flex; align-items: center; justify-content: center; padding: 16px">
+<div role="alertdialog" aria-modal="true" aria-labelledby="sess-t" aria-describedby="sess-d" style="width: 100%; max-width: 420px; box-sizing: border-box; background: #FFFFFF; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 30px 60px rgba(4,14,26,.35)">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 12px; background: #E3EEF9; color: #1A5FA8"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+<h2 id="sess-t" style="margin: 0; font-size: 21px; font-weight: 800">Your session has ended</h2>
+<p id="sess-d" style="margin: 0; font-size: 15px; line-height: 1.5; color: #4A5A6B">For your security you've been signed out. Sign in again to carry on.</p>
+<a href="SignIn.dc.html" class="btn-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer; margin-top: 4px">Sign in again</a>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"headerColour":{"editor":"enum","options":["Lagoon blue","Teal","Navy"],"default":"Lagoon blue"},"screenState":{"editor":"enum","options":["Default", "Loading", "Empty", "Error", "Map", "Map unavailable", "Session ended"],"default":"Default"},"$preview":{"width":1536,"height":730}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var themes = {
+      'Lagoon blue': { bg: '#0F5AA8', muted: '#DCEBFA', watch: '#A8E0FF', ring: '#FFD24A' },
+      'Teal': { bg: '#0A6B6B', muted: '#D6F5EC', watch: '#9FF0C6', ring: '#FFD24A' },
+      'Navy': { bg: '#0B1D2E', muted: '#B8C7D9', watch: '#3FA7F2', ring: '#7CC4FF' }
+    };
+    var t = themes[this.props.headerColour] || themes['Lagoon blue'];
+    var s = this.state || {};
+    var self = this;
+    var st = this.props.screenState || 'Default';
+
+    var data = [
+      { id: 'f1', t: 'flood', label: 'Flooded road', street: 'Commercial Avenue', c: 3, last: '2 h 20 min ago', cur: true, expiry: 'Expires in 3 h 40 min unless someone reconfirms', x: '50%', y: '30%' },
+      { id: 'f2', t: 'flood', label: 'Flooded road', street: 'Akoka Road', c: 1, last: '1 h ago', cur: true, expiry: 'Expires in 5 h unless someone reconfirms', x: '86%', y: '13%' },
+      { id: 'f3', t: 'flood', label: 'Flooded road', street: 'Iwaya Road', c: 2, last: '9 h ago', cur: false, expiry: 'Expired 3 h ago', x: '62%', y: '87%' },
+      { id: 'd1', t: 'drain', label: 'Blocked drain', street: 'Herbert Macaulay Way', c: 6, last: '5 min ago', cur: true, x: '31%', y: '47%' },
+      { id: 'd2', t: 'drain', label: 'Blocked drain', street: 'Hughes Avenue', c: 4, last: '3 h ago', cur: true, x: '45%', y: '62%' },
+      { id: 'd3', t: 'drain', label: 'Blocked drain', street: 'Montgomery Road', c: 2, last: 'yesterday', cur: false, x: '68%', y: '46%' }
+    ];
+    var forced = (st === 'Map' || st === 'Map unavailable') ? 'map' : 'list';
+    var view = s.view || forced;
+    var mapDown = st === 'Map unavailable';
+    var selId = s.sel || 'f1';
+    function shape(d) {
+      return { label: d.label, street: d.street, is_flood: d.t === 'flood', is_drain: d.t === 'drain', current: d.cur, expired: !d.cur,
+        countText: d.c + (d.c === 1 ? ' confirmation' : ' confirmations'), last: d.last,
+        hasExpiry: !!d.expiry, expiry: d.expiry, expiryColour: d.cur ? '#7A4A00' : '#4A5A6B' };
+    }
+    var floods = data.filter(function (d) { return d.t === 'flood'; }).map(shape);
+    var drains = data.filter(function (d) { return d.t === 'drain'; }).map(shape);
+    var markers = data.map(function (d) {
+      var on = d.id === selId;
+      return { x: d.x, y: d.y, is_flood: d.t === 'flood', is_drain: d.t === 'drain', pressed: on ? 'true' : 'false',
+        aria: d.label + ', ' + d.street + ', ' + (d.cur ? 'current' : 'expired') + ', ' + d.c + (d.c === 1 ? ' confirmation' : ' confirmations'),
+        bg: d.cur ? (on ? '#0B1D2E' : '#1A5FA8') : '#FFFFFF', fg: d.cur ? '#FFFFFF' : '#4A5A6B',
+        border: d.cur ? '3px solid #FFFFFF' : '2px dashed #4A5A6B',
+        pick: function () { self.setState({ sel: d.id }); } };
+    });
+    var sel = shape(data.filter(function (d) { return d.id === selId; })[0]);
+    var live = st === 'Default' || st === 'Map' || st === 'Map unavailable' || st === 'Session ended';
+    var showMapV = live && view === 'map' && !mapDown;
+    return { t: t, isDefault: st === 'Default', isLoading: st === 'Loading', isEmpty: st === 'Empty', isError: st === 'Error', isSession: st === 'Session ended', isMap: st === 'Map', isMapDown: st === 'Map unavailable', floods: floods, drains: drains, markers: markers, sel: sel,
+      showSeg: live, showUnavail: live && mapDown && view === 'map', showListView: live && !showMapV, showMapView: showMapV,
+      listPressed: view === 'list' ? 'true' : 'false', mapPressed: view === 'map' ? 'true' : 'false',
+      listBg: view === 'list' ? '#FFFFFF' : 'transparent', mapBg: view === 'map' ? '#FFFFFF' : 'transparent',
+      listShadow: view === 'list' ? '0 1px 3px rgba(11,29,46,.2)' : 'none', mapShadow: view === 'map' ? '0 1px 3px rgba(11,29,46,.2)' : 'none',
+      showList: function () { self.setState({ view: 'list' }); }, showMap: function () { self.setState({ view: 'map' }); } };
+  }
+}
+</script>
+</body>
+</html>

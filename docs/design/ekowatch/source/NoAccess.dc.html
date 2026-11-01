@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>You don't have access</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A5FA8}a:hover{color:#0B1D2E}
+.ew :focus-visible{outline:3px solid #1A5FA8;outline-offset:2px}
+.ew .on-dark :focus-visible{outline-color:var(--ring)}
+.ew .nav-link{transition:background .15s ease}
+.ew .nav-link:hover{background:rgba(255,255,255,.14)}
+.ew .btn-green:hover{background:#43B26E}
+.ew .btn-navy:hover{background:#1A3550}
+.ew .btn-line:hover{background:#EEF2F6}
+.ew .row-card{transition:border-color .15s ease,box-shadow .15s ease}
+.ew .row-card:hover{border-color:#9FB3C8;box-shadow:0 6px 16px rgba(11,29,46,.06)}
+.ew input,.ew select,.ew textarea,.ew button{font-family:inherit}
+.ew button:disabled{cursor:not-allowed;opacity:.55}
+.ew .phone-only{display:none}
+.ew .banner-short{display:none}
+.vh{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@keyframes ew-sk{from{background-position:200% 0}to{background-position:-200% 0}}
+.sk{display:block;border-radius:8px;background:linear-gradient(90deg,#E3E8EE 25%,#F1F4F8 50%,#E3E8EE 75%);background-size:200% 100%;animation:ew-sk 1.4s linear infinite}
+@keyframes ew-toast{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ew-toast{animation:ew-toast .35s ease-out both}
+@keyframes ew-bump{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+.ew-bump{animation:ew-bump .4s ease-out}
+.ew .mk{transition:transform .15s ease}
+.ew .mk:hover,.ew .mk:focus-visible{transform:scale(1.12)}
+@media (max-width:760px){
+  .ew .side,.ew .topbar{display:none !important}
+  .ew .phone-only{display:flex}
+  .ew .banner-long{display:none}.ew .banner-short{display:inline}
+  .ew .main-pad{padding:16px 16px 24px !important}
+  .ew .hide-sm{display:none !important}
+  .ew .stack-sm{flex-direction:column !important;align-items:stretch !important}
+}
+@media (prefers-reduced-motion:reduce){.ew *{animation:none !important;transition:none !important}}
+
+</style>
+</helmet>
+<div class="ew" style="font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #0B1D2E; background: #F4F7FA; min-height: 100vh; display: flex; flex-direction: column; font-size: 15px">
+<div style="background: #FDF0D5; color: #7A4A00; font-size: 14px; font-weight: 700; text-align: center; padding: 4px 16px; line-height: 1.4">
+<span class="banner-long">Demonstration data (simulated) · people and activity are fictional; place names are real</span>
+<span class="banner-short">Demo data (simulated) · fictional people, real places</span>
+</div>
+<div style="flex: 1 1 auto; display: flex; align-items: stretch">
+<aside class="side on-dark" style="flex: none; width: 232px; background: {{t.bg}}; color: #FFFFFF; --ring: {{t.ring}}; display: flex; flex-direction: column; gap: 18px; padding: 18px 14px; box-sizing: border-box">
+<a href="Operator.dc.html" aria-label="EkoWatch home" style="display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 0 4px; border-radius: 8px"><img src="/_blob/15a57f253fea09bdb3a91f9924af720e" alt="" style="width: 40px; height: 33px; display: block"><span style="font-size: 25px; font-weight: 800; letter-spacing: -0.5px; line-height: 1"><span style="color: #FFFFFF">eko</span><span style="color: {{t.watch}}">watch</span></span></a>
+
+<nav aria-label="Main"><ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px"><li><a href="Operator.dc.html" class="nav-link" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.7 2.7L16 9.8"></path></svg>Today's streets</a></li><li><a href="Hazards.dc.html" class="nav-link" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9 16H3z"></path><path d="M12 10v4.5"></path><path d="M12 17.2h.01"></path></svg>Hazards</a></li></ul></nav>
+</aside>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+<div class="phone-only on-dark" style="align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; background: {{t.bg}}; color: #FFFFFF; --ring: {{t.ring}}">
+<a href="Operator.dc.html" aria-label="EkoWatch home" style="display: flex; align-items: center; gap: 8px; text-decoration: none; border-radius: 8px"><img src="/_blob/15a57f253fea09bdb3a91f9924af720e" alt="" style="width: 34px; height: 28px; display: block"><span style="font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1"><span style="color: #FFFFFF">eko</span><span style="color: {{t.watch}}">watch</span></span></a>
+<button type="button" aria-label="Account: CleanStreet Services, Demo operator. Open menu" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.12); color: #FFFFFF; font-size: 14px; font-weight: 800; cursor: pointer">CS</button>
+</div>
+<div class="topbar" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; padding: 0 32px; background: #FFFFFF; border-bottom: 1px solid #CBD5E1">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: #4A5A6B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Yaba ward (placeholder)</span>
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; font-size: 13px; font-weight: 800">CS</span>
+<span style="display: flex; flex-direction: column; line-height: 1.25"><span style="font-size: 15px; font-weight: 800; color: #0B1D2E">CleanStreet Services</span><span style="font-size: 13px; font-weight: 600; color: #4A5A6B">Demo operator</span></span>
+<a href="SignIn.dc.html" class="btn-line" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer; box-sizing: border-box; min-height: 40px; margin-left: 4px">Sign out</a>
+</div>
+</div>
+<main class="main-pad" style="flex: 1 1 auto; width: 100%; max-width: 1180px; box-sizing: border-box; padding: 24px 32px 40px">
+<div role="alert" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; max-width: 620px; margin: 24px auto 0; padding: 32px 28px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 54px; height: 54px; border-radius: 14px; background: #EEF1F5; color: #0B1D2E"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+<h1 style="margin: 0; font-size: clamp(1.55rem, 2.2vw, 1.9rem); font-weight: 800; letter-spacing: -0.6px; line-height: 1.15">You don't have access to this page</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.55; color: #4A5A6B; max-width: 34em">Reports in your ward is for residents and the ward office. Your account is set up as an operator. If you think this is wrong, ask the ward office to check your access.</p>
+<a href="Operator.dc.html" class="btn-navy" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: #0B1D2E; color: #FFFFFF; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer; margin-top: 6px">Go to Today's streets</a>
+</div>
+</main>
+<nav aria-label="Main" class="phone-only" style="position: sticky; bottom: 0; z-index: 10; align-items: center; gap: 6px; padding: 6px 10px 10px; background: #FFFFFF; border-top: 1px solid #CBD5E1"><a href="Operator.dc.html" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; color: #0B1D2E; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.7 2.7L16 9.8"></path></svg>Today's streets</a><a href="Hazards.dc.html" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; color: #0B1D2E; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9 16H3z"></path><path d="M12 10v4.5"></path><path d="M12 17.2h.01"></path></svg>Hazards</a></nav>
+</div>
+</div>
+<sc-if value="{{isSession}}" hint-placeholder-val="{{ false }}">
+<div style="position: fixed; inset: 0; z-index: 40; background: rgba(11,29,46,0.6); display: flex; align-items: center; justify-content: center; padding: 16px">
+<div role="alertdialog" aria-modal="true" aria-labelledby="sess-t" aria-describedby="sess-d" style="width: 100%; max-width: 420px; box-sizing: border-box; background: #FFFFFF; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 30px 60px rgba(4,14,26,.35)">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 12px; background: #E3EEF9; color: #1A5FA8"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+<h2 id="sess-t" style="margin: 0; font-size: 21px; font-weight: 800">Your session has ended</h2>
+<p id="sess-d" style="margin: 0; font-size: 15px; line-height: 1.5; color: #4A5A6B">For your security you've been signed out. Sign in again to carry on.</p>
+<a href="SignIn.dc.html" class="btn-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer; margin-top: 4px">Sign in again</a>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"headerColour":{"editor":"enum","options":["Lagoon blue","Teal","Navy"],"default":"Lagoon blue"},"$preview":{"width":1536,"height":730}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var themes = {
+      'Lagoon blue': { bg: '#0F5AA8', muted: '#DCEBFA', watch: '#A8E0FF', ring: '#FFD24A' },
+      'Teal': { bg: '#0A6B6B', muted: '#D6F5EC', watch: '#9FF0C6', ring: '#FFD24A' },
+      'Navy': { bg: '#0B1D2E', muted: '#B8C7D9', watch: '#3FA7F2', ring: '#7CC4FF' }
+    };
+    var t = themes[this.props.headerColour] || themes['Lagoon blue'];
+    var s = this.state || {};
+    var self = this;
+    var st = this.props.screenState || 'Default';
+
+    
+    return { t: t, isDefault: st === 'Default', isLoading: st === 'Loading', isEmpty: st === 'Empty', isError: st === 'Error', isSession: st === 'Session ended' };
+  }
+}
+</script>
+</body>
+</html>

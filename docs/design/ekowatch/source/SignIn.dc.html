@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sign in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A5FA8}a:hover{color:#0B1D2E}
+.ew :focus-visible{outline:3px solid #1A5FA8;outline-offset:2px}
+.ew .on-dark :focus-visible{outline-color:var(--ring)}
+.ew .nav-link{transition:background .15s ease}
+.ew .nav-link:hover{background:rgba(255,255,255,.14)}
+.ew .btn-green:hover{background:#43B26E}
+.ew .btn-navy:hover{background:#1A3550}
+.ew .btn-line:hover{background:#EEF2F6}
+.ew .row-card{transition:border-color .15s ease,box-shadow .15s ease}
+.ew .row-card:hover{border-color:#9FB3C8;box-shadow:0 6px 16px rgba(11,29,46,.06)}
+.ew input,.ew select,.ew textarea,.ew button{font-family:inherit}
+.ew button:disabled{cursor:not-allowed;opacity:.55}
+.ew .phone-only{display:none}
+.ew .banner-short{display:none}
+.vh{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@keyframes ew-sk{from{background-position:200% 0}to{background-position:-200% 0}}
+.sk{display:block;border-radius:8px;background:linear-gradient(90deg,#E3E8EE 25%,#F1F4F8 50%,#E3E8EE 75%);background-size:200% 100%;animation:ew-sk 1.4s linear infinite}
+@keyframes ew-toast{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ew-toast{animation:ew-toast .35s ease-out both}
+@keyframes ew-bump{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+.ew-bump{animation:ew-bump .4s ease-out}
+.ew .mk{transition:transform .15s ease}
+.ew .mk:hover,.ew .mk:focus-visible{transform:scale(1.12)}
+@media (max-width:760px){
+  .ew .side,.ew .topbar{display:none !important}
+  .ew .phone-only{display:flex}
+  .ew .banner-long{display:none}.ew .banner-short{display:inline}
+  .ew .main-pad{padding:16px 16px 24px !important}
+  .ew .hide-sm{display:none !important}
+  .ew .stack-sm{flex-direction:column !important;align-items:stretch !important}
+}
+@media (prefers-reduced-motion:reduce){.ew *{animation:none !important;transition:none !important}}
+.si-wrap{display:flex;min-height:calc(100vh - 28px)}
+.si-photo{flex:1.1 1 0;position:relative;min-height:520px}
+.si-form{flex:1 1 0;display:flex;align-items:center;justify-content:center;padding:20px 32px}
+.ew .acct{transition:border-color .15s ease,background .15s ease}
+.ew .acct:hover{border-color:#1A5FA8}
+@media (max-width:860px){.si-wrap{flex-direction:column}.si-photo{flex:none;min-height:150px !important}.si-form{padding:0 12px 24px !important;margin-top:-24px;position:relative}.si-head{display:none !important}}
+</style>
+</helmet>
+<div class="ew" style="font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #0B1D2E; background: #F4F7FA; min-height: 100vh; font-size: 15px">
+<div style="background: #FDF0D5; color: #7A4A00; font-size: 14px; font-weight: 700; text-align: center; padding: 4px 16px; line-height: 1.4">
+<span class="banner-long">Demonstration data (simulated) · people and activity are fictional; place names are real</span>
+<span class="banner-short">Demo data (simulated) · fictional people, real places</span>
+</div>
+<div class="si-wrap">
+<div class="si-photo on-dark" style="--ring: {{t.ring}}; background: #0B1D2E; overflow: hidden">
+<img src="/_blob/fba97643ad112a9f714cfc1837717e3c" alt="A road under brown floodwater. A car and several kekes wade through it while traders stand at the edge." style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%">
+<div aria-hidden="true" style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,29,46,0.82) 0%, rgba(11,29,46,0.1) 55%, rgba(11,29,46,0.35) 100%)"></div>
+<a href="Main.dc.html" aria-label="EkoWatch home" style="position: absolute; top: 20px; left: 24px; display: flex; align-items: center; gap: 10px; text-decoration: none; border-radius: 8px"><img src="/_blob/15a57f253fea09bdb3a91f9924af720e" alt="" style="width: 40px; height: 33px; display: block"><span style="font-size: 25px; font-weight: 800; letter-spacing: -0.5px; line-height: 1"><span style="color: #FFFFFF">eko</span><span style="color: #A8E0FF">watch</span></span></a>
+<div class="si-head" style="position: absolute; left: 28px; right: 28px; bottom: 28px; display: flex; flex-direction: column; gap: 10px; color: #FFFFFF">
+<p style="margin: 0; font-size: clamp(1.9rem, 3vw, 2.8rem); font-weight: 800; letter-spacing: -1px; line-height: 1.05; max-width: 12em">Know what's happening on your street.</p>
+<p style="margin: 0; font-size: 16px; line-height: 1.5; color: #E6EDF5; max-width: 30em; font-weight: 600">Missed pickups, blocked drains and flooded roads, reported by neighbours and kept current together.</p>
+<span style="font-size: 13px; color: #DCE3EA">A flooded road in [LOCATION]. [PHOTO CREDIT]</span>
+</div>
+</div>
+<div class="si-form">
+<form onSubmit="{{noop}}" novalidate style="width: 100%; max-width: 440px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 20px; padding: 24px 26px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 48px rgba(11,29,46,0.10)">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.6px">Sign in</h1>
+<p style="margin: 0; font-size: 15px; color: #4A5A6B">Use your EkoWatch account, or pick a demo account.</p>
+</div>
+<sc-if value="{{isWrong}}" hint-placeholder-val="{{ false }}"><div role="alert" style="display: flex; gap: 8px; padding: 10px 12px; border-radius: 10px; background: #FDECEC; color: #B71C1C; font-size: 15px; font-weight: 700; line-height: 1.4"><span style="flex: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5"></path><path d="M12 16.5h.01"></path></svg></span>That email or password isn't right.</div></sc-if>
+<sc-if value="{{isDown}}" hint-placeholder-val="{{ false }}"><div role="alert" style="display: flex; gap: 8px; padding: 10px 12px; border-radius: 10px; background: #FDF0D5; color: #5C3800; font-size: 15px; font-weight: 700; line-height: 1.4"><span style="flex: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0"></path><path d="M5.5 12.5a10 10 0 0 1 13 0"></path><path d="M9 16a5 5 0 0 1 6 0"></path><path d="M12 19.5h.01"></path><path d="M3 3l18 18"></path></svg></span>We can't reach EkoWatch right now. Try again in a moment.</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="si-email" style="font-size: 15px; font-weight: 800; color: #0B1D2E">Email address</label>
+<input id="si-email" type="email" autocomplete="username" aria-invalid="{{emailInvalid}}" aria-describedby="{{emailDesc}}" value="{{email}}" onChange="{{setEmail}}" placeholder="name@example.com" style="width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 12px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 16px; border-color: {{emailBorder}}; border-width: {{emailBw}}">
+<sc-if value="{{isField}}" hint-placeholder-val="{{ false }}"><span id="email-err" style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: #B71C1C"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5"></path><path d="M12 16.5h.01"></path></svg>Enter your email address, like name@example.com</span></sc-if>
+</div>
+<div style="display: flex; flex-direction: column; gap: 5px">
+<label for="si-pass" style="font-size: 15px; font-weight: 800; color: #0B1D2E">Password</label>
+<input id="si-pass" type="password" autocomplete="current-password" aria-invalid="{{passInvalid}}" aria-describedby="{{passDesc}}" value="{{password}}" onChange="{{setPassword}}" style="width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 12px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 16px; border-color: {{passBorder}}; border-width: {{passBw}}">
+<sc-if value="{{isField}}" hint-placeholder-val="{{ false }}"><span id="pass-err" style="display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: #B71C1C"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5"></path><path d="M12 16.5h.01"></path></svg>Enter your password</span></sc-if>
+</div>
+<a href="{{target}}" class="btn-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer; width: 100%; box-sizing: border-box">Sign in</a>
+<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #E3E8EE">
+<h2 style="margin: 0; font-size: 15px; font-weight: 800">Demo accounts <span style="font-weight: 600; color: #4A5A6B">(fictional, tap to fill)</span></h2>
+<sc-for list="{{accounts}}" as="a" hint-placeholder-count="3">
+<button type="button" onClick="{{a.pick}}" aria-pressed="{{a.pressed}}" class="acct" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 40px; padding: 0 12px; border-radius: 10px; border: {{a.border}}; background: {{a.bg}}; color: #0B1D2E; cursor: pointer; text-align: left"><span style="font-size: 15px; font-weight: 800">{{a.role}}</span><span style="font-size: 14px; font-weight: 600; color: #4A5A6B; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{a.email}}</span></button>
+</sc-for>
+</div>
+</form>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"headerColour":{"editor":"enum","options":["Lagoon blue","Teal","Navy"],"default":"Lagoon blue"},"screenState":{"editor":"enum","options":["Default", "Field errors", "Wrong password", "Service unreachable"],"default":"Default"},"$preview":{"width":1536,"height":730}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var themes = {
+      'Lagoon blue': { bg: '#0F5AA8', muted: '#DCEBFA', watch: '#A8E0FF', ring: '#FFD24A' },
+      'Teal': { bg: '#0A6B6B', muted: '#D6F5EC', watch: '#9FF0C6', ring: '#FFD24A' },
+      'Navy': { bg: '#0B1D2E', muted: '#B8C7D9', watch: '#3FA7F2', ring: '#7CC4FF' }
+    };
+    var t = themes[this.props.headerColour] || themes['Lagoon blue'];
+    var s = this.state || {};
+    var self = this;
+    var st = this.props.screenState || 'Default';
+
+    var pick = s.pick || (st === 'Default' ? 'res' : null);
+    var defs = [
+      { key: 'res', role: 'Resident', email: 'ada@ekowatch.test', target: 'Reports.dc.html' },
+      { key: 'op', role: 'Operator', email: 'cleanstreet@ekowatch.test', target: 'Operator.dc.html' },
+      { key: 'auth', role: 'Ward office', email: 'wardoffice@ekowatch.test', target: 'Authority.dc.html' }
+    ];
+    var chosen = defs.filter(function (d) { return d.key === pick; })[0];
+    var accounts = defs.map(function (d) {
+      var on = d.key === pick;
+      return { role: d.role, email: d.email, pressed: on ? 'true' : 'false', border: on ? '2px solid #1A5FA8' : '1px solid #CBD5E1', bg: on ? '#F0F6FD' : '#FFFFFF',
+        pick: function () { self.setState({ pick: d.key, email: d.email, password: 'demo-password' }); } };
+    });
+    var field = st === 'Field errors' && !s.pick;
+    var bad = field || st === 'Wrong password';
+    return { t: t, isDefault: st === 'Default', isLoading: st === 'Loading', isEmpty: st === 'Empty', isError: st === 'Error', isSession: st === 'Session ended', isField: st === 'Field errors', isWrong: st === 'Wrong password', isDown: st === 'Service unreachable', accounts: accounts, isField: field,
+      email: s.email != null ? s.email : (field ? '' : (st === 'Default' ? 'ada@ekowatch.test' : 'ada@ekowatch.test')),
+      password: s.password != null ? s.password : (field ? '' : 'demo-password'),
+      setEmail: function (e) { self.setState({ email: e.target.value }); }, setPassword: function (e) { self.setState({ password: e.target.value }); },
+      emailInvalid: field ? 'true' : 'false', passInvalid: bad ? 'true' : 'false', emailDesc: field ? 'email-err' : '', passDesc: field ? 'pass-err' : '',
+      emailBorder: field ? '#B71C1C' : '#8A99AB', passBorder: bad ? '#B71C1C' : '#8A99AB', emailBw: field ? '2px' : '1px', passBw: bad ? '2px' : '1px',
+      target: chosen ? chosen.target : 'Reports.dc.html', noop: function (e) { e.preventDefault(); } };
+  }
+}
+</script>
+</body>
+</html>

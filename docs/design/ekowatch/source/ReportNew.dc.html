@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Report a problem</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A5FA8}a:hover{color:#0B1D2E}
+.ew :focus-visible{outline:3px solid #1A5FA8;outline-offset:2px}
+.ew .on-dark :focus-visible{outline-color:var(--ring)}
+.ew .nav-link{transition:background .15s ease}
+.ew .nav-link:hover{background:rgba(255,255,255,.14)}
+.ew .btn-green:hover{background:#43B26E}
+.ew .btn-navy:hover{background:#1A3550}
+.ew .btn-line:hover{background:#EEF2F6}
+.ew .row-card{transition:border-color .15s ease,box-shadow .15s ease}
+.ew .row-card:hover{border-color:#9FB3C8;box-shadow:0 6px 16px rgba(11,29,46,.06)}
+.ew input,.ew select,.ew textarea,.ew button{font-family:inherit}
+.ew button:disabled{cursor:not-allowed;opacity:.55}
+.ew .phone-only{display:none}
+.ew .banner-short{display:none}
+.vh{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@keyframes ew-sk{from{background-position:200% 0}to{background-position:-200% 0}}
+.sk{display:block;border-radius:8px;background:linear-gradient(90deg,#E3E8EE 25%,#F1F4F8 50%,#E3E8EE 75%);background-size:200% 100%;animation:ew-sk 1.4s linear infinite}
+@keyframes ew-toast{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ew-toast{animation:ew-toast .35s ease-out both}
+@keyframes ew-bump{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+.ew-bump{animation:ew-bump .4s ease-out}
+.ew .mk{transition:transform .15s ease}
+.ew .mk:hover,.ew .mk:focus-visible{transform:scale(1.12)}
+@media (max-width:760px){
+  .ew .side,.ew .topbar{display:none !important}
+  .ew .phone-only{display:flex}
+  .ew .banner-long{display:none}.ew .banner-short{display:inline}
+  .ew .main-pad{padding:16px 16px 24px !important}
+  .ew .hide-sm{display:none !important}
+  .ew .stack-sm{flex-direction:column !important;align-items:stretch !important}
+}
+@media (prefers-reduced-motion:reduce){.ew *{animation:none !important;transition:none !important}}
+@media (max-width:760px){.ew .sendbar{bottom:62px !important}}
+</style>
+</helmet>
+<div class="ew" style="font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #0B1D2E; background: #F4F7FA; min-height: 100vh; display: flex; flex-direction: column; font-size: 15px">
+<div style="background: #FDF0D5; color: #7A4A00; font-size: 14px; font-weight: 700; text-align: center; padding: 4px 16px; line-height: 1.4">
+<span class="banner-long">Demonstration data (simulated) · people and activity are fictional; place names are real</span>
+<span class="banner-short">Demo data (simulated) · fictional people, real places</span>
+</div>
+<div style="flex: 1 1 auto; display: flex; align-items: stretch">
+<aside class="side on-dark" style="flex: none; width: 232px; background: {{t.bg}}; color: #FFFFFF; --ring: {{t.ring}}; display: flex; flex-direction: column; gap: 18px; padding: 18px 14px; box-sizing: border-box">
+<a href="Reports.dc.html" aria-label="EkoWatch home" style="display: flex; align-items: center; gap: 10px; text-decoration: none; padding: 0 4px; border-radius: 8px"><img src="/_blob/15a57f253fea09bdb3a91f9924af720e" alt="" style="width: 40px; height: 33px; display: block"><span style="font-size: 25px; font-weight: 800; letter-spacing: -0.5px; line-height: 1"><span style="color: #FFFFFF">eko</span><span style="color: {{t.watch}}">watch</span></span></a>
+<a href="ReportNew.dc.html" aria-current="page" class="btn-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer; width: 100%; box-sizing: border-box; box-shadow: inset 0 0 0 3px #FFFFFF"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Report a problem</a>
+<nav aria-label="Main"><ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px"><li><a href="Reports.dc.html" class="nav-link" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3.5 6h.01"></path><path d="M3.5 12h.01"></path><path d="M3.5 18h.01"></path></svg>Reports</a></li><li><a href="Hazards.dc.html" class="nav-link" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9 16H3z"></path><path d="M12 10v4.5"></path><path d="M12 17.2h.01"></path></svg>Hazards</a></li><li><a href="MyStreet.dc.html" class="nav-link" style="display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 12px; border-radius: 10px; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>My street</a></li></ul></nav>
+</aside>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+<div class="phone-only on-dark" style="align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; background: {{t.bg}}; color: #FFFFFF; --ring: {{t.ring}}">
+<a href="Reports.dc.html" aria-label="EkoWatch home" style="display: flex; align-items: center; gap: 8px; text-decoration: none; border-radius: 8px"><img src="/_blob/15a57f253fea09bdb3a91f9924af720e" alt="" style="width: 34px; height: 28px; display: block"><span style="font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1"><span style="color: #FFFFFF">eko</span><span style="color: {{t.watch}}">watch</span></span></a>
+<button type="button" aria-label="Account: Ada, Demo resident. Open menu" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.7); background: rgba(255,255,255,0.12); color: #FFFFFF; font-size: 14px; font-weight: 800; cursor: pointer">AD</button>
+</div>
+<div class="topbar" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; padding: 0 32px; background: #FFFFFF; border-bottom: 1px solid #CBD5E1">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: #4A5A6B"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Yaba ward (placeholder)</span>
+<div style="display: flex; align-items: center; gap: 12px">
+<span aria-hidden="true" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; font-size: 13px; font-weight: 800">AD</span>
+<span style="display: flex; flex-direction: column; line-height: 1.25"><span style="font-size: 15px; font-weight: 800; color: #0B1D2E">Ada</span><span style="font-size: 13px; font-weight: 600; color: #4A5A6B">Demo resident</span></span>
+<a href="SignIn.dc.html" class="btn-line" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer; box-sizing: border-box; min-height: 40px; margin-left: 4px">Sign out</a>
+</div>
+</div>
+<main class="main-pad" style="flex: 1 1 auto; width: 100%; max-width: 1180px; box-sizing: border-box; padding: 24px 32px 40px">
+<a href="Reports.dc.html" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; font-size: 15px; font-weight: 800; text-decoration: none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6l6-6"></path></svg>Back to reports</a><div class="stack-sm" style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 16px; margin-bottom: 18px">
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<h1 style="margin: 0; font-size: clamp(1.55rem, 2.2vw, 1.9rem); font-weight: 800; letter-spacing: -0.6px; line-height: 1.15">Report a problem</h1>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #4A5A6B">Your name is never shown with a report.</p>
+</div>
+
+</div><sc-if value="{{formVisible}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start"><div style="flex: 999 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 18px 20px 0; display: flex; flex-direction: column; gap: 18px">
+<sc-if value="{{isSendFailed}}" hint-placeholder-val="{{ false }}"><div role="alert" style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #FDECEC; color: #B71C1C; font-size: 15px; line-height: 1.45"><span style="flex: none; margin-top: 1px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5"></path><path d="M12 16.5h.01"></path></svg></span><span><strong>Your report wasn't sent. Try again.</strong> What you typed is still here.</span></div></sc-if><sc-if value="{{isUnknown}}" hint-placeholder-val="{{ false }}"><div role="alert" style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #FDF0D5; color: #5C3800; font-size: 15px; line-height: 1.45"><span style="flex: none; margin-top: 1px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9a15 15 0 0 1 20 0"></path><path d="M5.5 12.5a10 10 0 0 1 13 0"></path><path d="M9 16a5 5 0 0 1 6 0"></path><path d="M12 19.5h.01"></path><path d="M3 3l18 18"></path></svg></span><span style="display: flex; flex-direction: column; gap: 4px"><strong>We're not sure your report was sent.</strong><span>The connection dropped before EkoWatch replied. Check your reports first. If it isn't there, send it again. It won't be sent twice.</span></span></div></sc-if><sc-if value="{{isEmpty}}" hint-placeholder-val="{{ false }}"><div style="display: flex; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #E3EEF9; color: #0B1D2E; font-size: 15px; line-height: 1.45"><span style="flex: none; margin-top: 1px; color: #1A5FA8"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg></span><span>You haven't chosen your street yet. <a href="Profile.dc.html" style="font-weight: 800">Choose it once</a> and we'll fill it in for you next time.</span></div></sc-if>
+<fieldset style="margin: 0; padding: 0; border: 0; min-width: 0">
+<legend style="font-size: 15px; font-weight: 800; color: #0B1D2E; padding: 0; margin-bottom: 8px">What are you reporting?</legend>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px">
+<sc-for list="{{types}}" as="ty" hint-placeholder-count="4">
+<label style="position: relative; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 6px 12px; border-radius: 12px; border: {{ty.border}}; background: {{ty.bg}}; cursor: pointer">
+<input type="radio" name="type" value="{{ty.key}}" checked="{{ty.on}}" onChange="{{ty.pick}}" style="position: absolute; opacity: 0; width: 1px; height: 1px">
+<sc-if value="{{ty.is_flood}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #E3EEF9; color: #1A5FA8"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9q3-3 6 0t6 0t6 0"></path><path d="M3 14q3-3 6 0t6 0t6 0"></path><path d="M3 19q3-3 6 0t6 0t6 0"></path></svg></span></sc-if><sc-if value="{{ty.is_drain}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #E3EEF9; color: #1A5FA8"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="10" rx="2"></rect><path d="M7 5v10M11 5v10M15 5v10M19 5v10"></path><path d="M6 19h4M14 19h4"></path></svg></span></sc-if><sc-if value="{{ty.is_missed}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #FDECEC; color: #B71C1C"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M6 7l1 13h10l1-13"></path><path d="M10 11l4 4M14 11l-4 4"></path></svg></span></sc-if><sc-if value="{{ty.is_dump}}" hint-placeholder-val="{{ false }}"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: #FDF0D5; color: #7A4A00"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"></path><path d="M5 20l2-6h4l2 6"></path><path d="M12 20l2.5-8h4L21 20"></path><path d="M9 14V9l2-2"></path></svg></span></sc-if>
+<span style="font-size: 15px; font-weight: 800">{{ty.label}}</span>
+</label>
+</sc-for>
+</div>
+</fieldset>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="street" style="font-size: 15px; font-weight: 800; color: #0B1D2E">Street</label>
+<sc-if value="{{streetReady}}" hint-placeholder-val="{{ true }}"><select id="street" value="{{street}}" onChange="{{setStreet}}" style="width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 12px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 16px; appearance: auto"><option value="">Choose a street</option><option>Herbert Macaulay Way</option><option>Commercial Avenue</option><option>Montgomery Road</option><option>Hughes Avenue</option><option>Jibowu Street</option><option>Ojuelegba Road</option><option>Iwaya Road</option><option>Akoka Road</option></select></sc-if>
+<sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}"><span class="sk" aria-hidden="true" style="height: 46px; border-radius: 10px"></span></sc-if>
+</div>
+<sc-if value="{{showDay}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="day" style="font-size: 15px; font-weight: 800; color: #0B1D2E">Which collection day?</label>
+<sc-if value="{{streetReady}}" hint-placeholder-val="{{ true }}"><select id="day" required aria-describedby="day-help" disabled="{{dayDisabled}}" value="{{day}}" onChange="{{setDay}}" style="width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 12px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 16px; appearance: auto"><option value="">{{dayPlaceholder}}</option><option>Friday 30 October</option><option>Tuesday 27 October</option><option>Friday 23 October</option><option>Tuesday 20 October</option></select></sc-if>
+<sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}"><span class="sk" aria-hidden="true" style="height: 46px; border-radius: 10px"></span></sc-if>
+<span id="day-help" style="font-size: 14px; color: #4A5A6B">Past collection days for this street.</span>
+</div>
+</sc-if>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; justify-content: space-between; gap: 12px; align-items: baseline">
+<label for="note" style="font-size: 15px; font-weight: 800; color: #0B1D2E">What's happening?</label>
+<span id="note-count" aria-live="polite" style="font-size: 14px; font-weight: 700; color: #4A5A6B">{{noteCount}} / 1000</span>
+</div>
+<textarea id="note" rows="3" maxlength="1000" aria-describedby="note-count note-help" value="{{note}}" onChange="{{setNote}}" style="width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 12px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 16px; min-height: 84px; padding: 10px 12px; line-height: 1.5; resize: vertical"></textarea>
+<span id="note-help" style="font-size: 14px; color: #4A5A6B">1 to 1000 characters. Say what you can see, not who caused it.</span>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; align-items: start">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 15px; font-weight: 800; color: #0B1D2E">Photo <span style="font-weight: 600; color: #4A5A6B">(optional)</span></span>
+<label style="position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 2px dashed #8A99AB; border-radius: 12px; background: #F8FAFC; cursor: pointer">
+<input type="file" accept="image/jpeg,image/png" capture="environment" style="position: absolute; opacity: 0; width: 1px; height: 1px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px; background: #E3EEF9; color: #1A5FA8"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></span>
+<span style="display: flex; flex-direction: column"><span style="font-size: 15px; font-weight: 800; color: #1A5FA8">Take or add a photo</span><span style="font-size: 14px; color: #4A5A6B">JPG or PNG, up to 5 MB</span></span>
+</label>
+<span style="font-size: 14px; line-height: 1.45; color: #4A5A6B">We can't confirm where a photo was taken. Location details are removed when it's saved.</span>
+</div>
+<label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; padding-top: 26px">
+<input type="checkbox" style="width: 22px; height: 22px; margin: 0; accent-color: #1A5FA8; flex: none">
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 800; color: #0B1D2E">Use my location</span><span style="font-size: 14px; line-height: 1.45; color: #4A5A6B">Only if your browser allows it. The street is enough on its own.</span></span>
+</label>
+</div>
+
+<div class="sendbar" style="position: sticky; bottom: 0; z-index: 5; margin: 0 -20px; padding: 12px 20px; background: #FFFFFF; border-top: 1px solid #E3E8EE; border-radius: 0 0 14px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+<sc-if value="{{showSend}}" hint-placeholder-val="{{ true }}"><a href="ReportDetail.dc.html" class="btn-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer">Send report</a></sc-if><sc-if value="{{isSendFailed}}" hint-placeholder-val="{{ false }}"><a href="ReportDetail.dc.html" class="btn-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg>Try again</a></sc-if><sc-if value="{{isLoading}}" hint-placeholder-val="{{ false }}"><button type="button" disabled style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer">Send report</button><span style="font-size: 14px; color: #4A5A6B">Loading the street list</span></sc-if><sc-if value="{{isUnknown}}" hint-placeholder-val="{{ false }}"><a href="Reports.dc.html" class="btn-navy" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: #0B1D2E; color: #FFFFFF; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer">Check my reports</a><a href="ReportDetail.dc.html" class="btn-line" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer; box-sizing: border-box">Send again</a></sc-if>
+<sc-if value="{{notUnknown}}" hint-placeholder-val="{{ true }}"><a href="Reports.dc.html" class="btn-line" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer; box-sizing: border-box; border-color: transparent">Cancel</a></sc-if>
+</div>
+</div><aside class="hide-sm" style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 16px; font-weight: 800">After you send it</h2>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px">
+<li style="display: flex; gap: 10px"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; font-size: 13px; font-weight: 800">1</span><span style="font-size: 15px; line-height: 1.45; color: #4A5A6B">It appears in Reports in your ward, marked as reported by a resident.</span></li>
+<li style="display: flex; gap: 10px"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; font-size: 13px; font-weight: 800">2</span><span style="font-size: 15px; line-height: 1.45; color: #4A5A6B">Neighbours who see it confirm it, and it moves up the list.</span></li>
+<li style="display: flex; gap: 10px"><span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; font-size: 13px; font-weight: 800">3</span><span style="font-size: 15px; line-height: 1.45; color: #4A5A6B">The ward office sees it on its dashboard.</span></li>
+</ol>
+<p style="margin: 0; padding: 12px 14px; border-radius: 12px; background: #E3EEF9; font-size: 14px; line-height: 1.5"><strong>Flooded roads</strong> stay current for 6 hours, then expire unless someone confirms them again.</p>
+</aside></div></sc-if><sc-if value="{{isError}}" hint-placeholder-val="{{ false }}"><div role="alert" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 32px 24px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 14px; background: #FDECEC; color: #B71C1C"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5"></path><path d="M12 16.5h.01"></path></svg></span>
+<p style="margin: 0; font-size: 18px; font-weight: 800">We couldn't load the street list.</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.5; color: #4A5A6B; max-width: 34em">You need it to choose where the problem is. Check your connection, then try again.</p>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 6px"><button type="button" class="btn-navy" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 10px; background: #0B1D2E; color: #FFFFFF; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg>Try again</button><a href="Reports.dc.html" class="btn-line" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid #8A99AB; border-radius: 10px; background: #FFFFFF; color: #0B1D2E; font-size: 15px; font-weight: 800; text-decoration: none; cursor: pointer; box-sizing: border-box">Back to reports</a></div>
+</div></sc-if>
+</main>
+<nav aria-label="Main" class="phone-only" style="position: sticky; bottom: 0; z-index: 10; align-items: center; gap: 6px; padding: 6px 10px 10px; background: #FFFFFF; border-top: 1px solid #CBD5E1"><a href="Reports.dc.html" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; color: #0B1D2E; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3.5 6h.01"></path><path d="M3.5 12h.01"></path><path d="M3.5 18h.01"></path></svg>Reports</a><a href="Hazards.dc.html" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; color: #0B1D2E; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l9 16H3z"></path><path d="M12 10v4.5"></path><path d="M12 17.2h.01"></path></svg>Hazards</a><a href="ReportNew.dc.html" class="btn-green" aria-current="page" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; background: #50C47C; color: #0B1D2E; font-weight: 800"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>Report</a><a href="MyStreet.dc.html" style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 0; border-radius: 12px; font-size: 13px; text-decoration: none; color: #0B1D2E; font-weight: 700"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>My street</a></nav>
+</div>
+</div>
+<sc-if value="{{isSession}}" hint-placeholder-val="{{ false }}">
+<div style="position: fixed; inset: 0; z-index: 40; background: rgba(11,29,46,0.6); display: flex; align-items: center; justify-content: center; padding: 16px">
+<div role="alertdialog" aria-modal="true" aria-labelledby="sess-t" aria-describedby="sess-d" style="width: 100%; max-width: 420px; box-sizing: border-box; background: #FFFFFF; border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 30px 60px rgba(4,14,26,.35)">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border-radius: 12px; background: #E3EEF9; color: #1A5FA8"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+<h2 id="sess-t" style="margin: 0; font-size: 21px; font-weight: 800">Your session has ended</h2>
+<p id="sess-d" style="margin: 0; font-size: 15px; line-height: 1.5; color: #4A5A6B">For your security you've been signed out. Sign in again to carry on.</p>
+<a href="SignIn.dc.html" class="btn-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 20px; border: 0; border-radius: 10px; background: #50C47C; color: #0B1D2E; font-size: 16px; font-weight: 800; text-decoration: none; cursor: pointer; margin-top: 4px">Sign in again</a>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"headerColour":{"editor":"enum","options":["Lagoon blue","Teal","Navy"],"default":"Lagoon blue"},"screenState":{"editor":"enum","options":["Default", "Loading", "Empty", "Error", "Send failed", "Outcome unknown", "Session ended"],"default":"Default"},"$preview":{"width":1536,"height":730}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var themes = {
+      'Lagoon blue': { bg: '#0F5AA8', muted: '#DCEBFA', watch: '#A8E0FF', ring: '#FFD24A' },
+      'Teal': { bg: '#0A6B6B', muted: '#D6F5EC', watch: '#9FF0C6', ring: '#FFD24A' },
+      'Navy': { bg: '#0B1D2E', muted: '#B8C7D9', watch: '#3FA7F2', ring: '#7CC4FF' }
+    };
+    var t = themes[this.props.headerColour] || themes['Lagoon blue'];
+    var s = this.state || {};
+    var self = this;
+    var st = this.props.screenState || 'Default';
+
+    var isEmptyS = st === 'Empty', isLoad = st === 'Loading';
+    var type = s.type || 'missed';
+    var defNote = isEmptyS ? '' : 'Bins have been out since Friday morning. Nothing was collected on our side of the road.';
+    var note = s.note != null ? s.note : defNote;
+    var street = s.street != null ? s.street : (isEmptyS ? '' : 'Herbert Macaulay Way');
+    var day = s.day != null ? s.day : (st === 'Send failed' || st === 'Outcome unknown' ? 'Friday 30 October' : '');
+    var types = [['missed', 'Missed pickup'], ['dump', 'Illegal dumping'], ['drain', 'Blocked drain'], ['flood', 'Flooded road']].map(function (d) {
+      var on = type === d[0];
+      return { key: d[0], label: d[1], on: on, is_flood: d[0] === 'flood', is_drain: d[0] === 'drain', is_missed: d[0] === 'missed', is_dump: d[0] === 'dump',
+        border: on ? '2px solid #1A5FA8' : '1px solid #CBD5E1', bg: on ? '#F0F6FD' : '#FFFFFF',
+        pick: function () { self.setState({ type: d[0] }); } };
+    });
+    return { t: t, isDefault: st === 'Default', isLoading: st === 'Loading', isEmpty: st === 'Empty', isError: st === 'Error', isSession: st === 'Session ended', isSendFailed2: st === 'Send failed', isUnknown2: st === 'Outcome unknown', types: types, note: note, noteCount: note.length, setNote: function (e) { self.setState({ note: e.target.value }); },
+      street: street, noStreet: !street, setStreet: function (e) { self.setState({ street: e.target.value }); },
+      day: day, setDay: function (e) { self.setState({ day: e.target.value }); },
+      dayDisabled: !street, dayPlaceholder: street ? 'Choose a day' : 'Choose a street first',
+      showDay: type === 'missed', streetReady: !isLoad,
+      formVisible: st !== 'Error', isSendFailed: st === 'Send failed', isUnknown: st === 'Outcome unknown', notUnknown: st !== 'Outcome unknown',
+      showSend: st === 'Default' || st === 'Empty' || st === 'Session ended' };
+  }
+}
+</script>
+</body>
+</html>

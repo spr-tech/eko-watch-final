@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>EkoWatch landing page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1A5FA8}a:hover{color:#0B1D2E}
+.ew :focus-visible{outline:3px solid #1A5FA8;outline-offset:2px}
+.ew .dark :focus-visible{outline-color:var(--ring)}
+.ew .btn-green{transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
+.ew .btn-green:hover{background:#43B26E;transform:translateY(-2px);box-shadow:0 10px 24px rgba(11,29,46,.25)}
+.ew .btn-ghost{transition:background .2s ease}
+.ew .btn-ghost:hover{background:rgba(255,255,255,0.14)}
+.ew .banner-short{display:none}
+@media (max-width:640px){.ew .banner-long{display:none}.ew .banner-short{display:inline}.ew .hide-sm{display:none !important}.ew .ew-steps-line{display:none !important}.ew .ew-chip{display:none !important}}
+/* Hero entrance, on load */
+@keyframes ew-up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.ew-in{animation:ew-up .8s cubic-bezier(.2,.7,.2,1) both}
+.ew-in-2{animation-delay:.12s}.ew-in-3{animation-delay:.24s}.ew-in-4{animation-delay:.36s}
+
+/* Hero stage: a sample report arriving on a real photo. Resting style is the finished state */
+@keyframes ew-kb{from{transform:scale(1.14) translate(1.5%,1%)}to{transform:none}}
+@keyframes ew-drop{0%{opacity:0;transform:translateY(-70px)}60%{opacity:1;transform:translateY(6px)}100%{opacity:1;transform:none}}
+@keyframes ew-ring{0%{opacity:.85;transform:scale(.4)}100%{opacity:0;transform:scale(2.8)}}
+@keyframes ew-card-in{from{opacity:0;transform:translateY(34px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes ew-row{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes ew-flash{0%{opacity:0;transform:translateY(10px)}25%,75%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-10px)}}
+@keyframes ew-dot{0%{opacity:0;transform:scale(0)}70%{opacity:1;transform:scale(1.25)}100%{opacity:1;transform:none}}
+@keyframes ew-drain{from{width:100%}}
+@keyframes ew-chip{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes ew-fadein{from{opacity:0}to{opacity:1}}
+.ew-stage .ew-ring{opacity:0}
+.ew-stage .ew-c1,.ew-stage .ew-c2{opacity:0}
+.ew-stage.play .ew-kb{animation:ew-kb 9s cubic-bezier(.15,.6,.2,1) both}
+.ew-stage.play .ew-tag{animation:ew-fadein .6s ease .3s backwards}
+.ew-stage.play .ew-pin{animation:ew-drop .75s cubic-bezier(.3,1.3,.5,1) .7s backwards}
+.ew-stage.play .ew-ring{animation:ew-ring 1.7s cubic-bezier(.2,.6,.3,1) 1.3s}
+.ew-stage.play .ew-ring-2{animation-delay:1.75s}
+.ew-stage.play .ew-card{animation:ew-card-in .9s cubic-bezier(.2,.7,.2,1) 1.5s backwards}
+.ew-stage.play .ew-row{animation:ew-row .6s ease-out 1.9s backwards}
+.ew-stage.play .ew-row-2{animation-delay:2.1s}.ew-stage.play .ew-row-3{animation-delay:2.3s}
+.ew-stage.play .ew-c1{animation:ew-flash .65s ease 2.5s}
+.ew-stage.play .ew-c2{animation:ew-flash .65s ease 3.15s}
+.ew-stage.play .ew-c3{animation:ew-row .45s ease-out 3.8s backwards}
+.ew-stage.play .ew-dot{animation:ew-dot .45s cubic-bezier(.2,.8,.3,1.3) 2.5s backwards}
+.ew-stage.play .ew-dot-2{animation-delay:3.15s}.ew-stage.play .ew-dot-3{animation-delay:3.8s}
+.ew-stage.play .ew-bar{animation:ew-drain 4s ease-in-out 2.4s backwards}
+.ew-stage.play .ew-chip{animation:ew-chip .8s cubic-bezier(.2,.7,.2,1) 4.4s backwards}
+
+/* Activity ticker */
+@keyframes ew-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes ew-pulse{0%{box-shadow:0 0 0 0 rgba(80,196,124,.7)}70%{box-shadow:0 0 0 10px rgba(80,196,124,0)}100%{box-shadow:0 0 0 0 rgba(80,196,124,0)}}
+.ew-track{animation:ew-marquee 46s linear infinite}
+.ew-live{animation:ew-pulse 1.8s ease-out infinite}
+.ew-paused .ew-track,.ew-paused .ew-live{animation-play-state:paused}
+
+/* Cards */
+.ew-card{transition:translate .25s ease,box-shadow .25s ease,border-color .25s ease}
+.ew-card:hover{translate:0 -8px;box-shadow:0 18px 36px rgba(11,29,46,.12);border-color:#9FB3C8}
+@keyframes ew-wiggle{0%,100%{transform:none}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+@keyframes ew-bob{0%,100%{transform:none}50%{transform:translateY(-4px)}}
+.ew-card:hover .ew-ico svg{animation:ew-wiggle .5s ease}
+.ew-card:hover .ew-ico-bob svg{animation:ew-bob .6s ease 2}
+
+/* Scroll-driven reveals */
+@keyframes ew-reveal{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:none}}
+@keyframes ew-from-left{from{opacity:0;transform:translateX(-70px)}to{opacity:1;transform:none}}
+@keyframes ew-from-right{from{opacity:0;transform:translateX(70px)}to{opacity:1;transform:none}}
+@keyframes ew-card-pop{from{opacity:0;transform:translateY(56px) scale(.88)}to{opacity:1;transform:none}}
+@keyframes ew-grow-x{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes ew-num{from{background:#F4F7FA;color:#0B1D2E}to{background:#0B1D2E;color:#FFFFFF}}
+@keyframes ew-glow{from{opacity:.14}to{opacity:1}}
+@keyframes ew-wipe{from{clip-path:inset(0 100% 0 0 round 20px);transform:scale(1.08)}to{clip-path:inset(0 0 0 0 round 20px);transform:none}}
+@keyframes ew-draw{from{stroke-dashoffset:22}to{stroke-dashoffset:0}}
+@supports (animation-timeline: view()){
+  .ew-reveal{animation:ew-reveal linear both;animation-timeline:view();animation-range:entry 5% cover 30%}
+  .ew-step{animation:ew-reveal ease-out both;animation-timeline:view();animation-range:entry 10% cover 34%}
+  .ew-step:nth-child(3){animation-range:entry 16% cover 38%}.ew-step:nth-child(4){animation-range:entry 22% cover 42%}
+  .ew-step:nth-child(5){animation-range:entry 28% cover 46%}.ew-step:nth-child(6){animation-range:entry 34% cover 50%}
+  .ew-num{animation:ew-num linear both;animation-timeline:view();animation-range:entry 60% cover 45%}
+  .ew-steps-line{transform-origin:left;animation:ew-grow-x linear both;animation-timeline:view();animation-range:entry 20% cover 55%}
+  .ew-card-l,.ew-card-p,.ew-card-r{animation-timing-function:ease-out;animation-fill-mode:both;animation-timeline:view();animation-range:entry 10% cover 38%}
+  .ew-card-l{animation-name:ew-from-left}.ew-card-p{animation-name:ew-card-pop}.ew-card-r{animation-name:ew-from-right}
+  .ew-word{animation:ew-glow linear both;animation-timeline:view();animation-range:entry 30% cover 55%}
+  .ew-wipe{animation:ew-wipe ease-out both;animation-timeline:view();animation-range:entry 0% cover 45%}
+  .ew-rule-line{transform-origin:left;animation:ew-grow-x linear both;animation-timeline:view();animation-range:entry 10% cover 40%}
+  .ew-tick path{stroke-dasharray:22;animation:ew-draw ease-out both;animation-timeline:view();animation-range:entry 40% cover 50%}
+}
+@media (prefers-reduced-motion: reduce){
+  .ew-in,.ew-stage.play *,.ew-track,.ew-live,.ew-reveal,.ew-step,.ew-num,.ew-steps-line,.ew-card-l,.ew-card-p,.ew-card-r,.ew-word,.ew-wipe,.ew-rule-line,.ew-tick path,.ew-card:hover .ew-ico svg,.ew-card:hover .ew-ico-bob svg{animation:none !important}
+  .ew-card,.ew .btn-green{transition:none}.ew-card:hover{translate:none}.ew .btn-green:hover{transform:none}
+}
+</style>
+</helmet>
+<div class="ew" style="font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif; color: #0B1D2E; background: #F4F7FA; min-height: 100%">
+
+<div style="background: #FDF0D5; color: #7A4A00; font-size: 14px; font-weight: 700; text-align: center; padding: 6px 16px; line-height: 1.4">
+<span class="banner-long">Demonstration data (simulated) · people and activity are fictional; place names are real</span>
+<span class="banner-short">Demo data (simulated) · fictional people, real places</span>
+</div>
+
+<header class="dark" style="position: relative; background: {{t.bg}}; color: #FFFFFF; --ring: {{t.ring}}; overflow: hidden">
+<div style="max-width: 1240px; margin: 0 auto; padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+<a href="#top" aria-label="EkoWatch home" style="display: flex; align-items: center; gap: 10px; text-decoration: none; border-radius: 8px">
+<img src="/_blob/15a57f253fea09bdb3a91f9924af720e" alt="" style="width: 44px; height: 37px; display: block">
+<span style="font-size: 28px; font-weight: 800; letter-spacing: -0.5px; line-height: 1"><span style="color: #FFFFFF">eko</span><span style="color: {{t.watch}}">watch</span></span>
+</a>
+<div style="display: flex; align-items: center; gap: 16px">
+<span class="hide-sm" style="display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 700; color: {{t.muted}}">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+Yaba ward (placeholder)
+</span>
+<a href="SignIn.dc.html" class="btn-ghost" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 2px solid #FFFFFF; border-radius: 10px; color: #FFFFFF; font-weight: 800; font-size: 16px; text-decoration: none; box-sizing: border-box">Sign in</a>
+</div>
+</div>
+
+<div id="top" style="max-width: 1240px; margin: 0 auto; padding: 28px 24px 44px; display: flex; flex-wrap: wrap; align-items: center; gap: 40px 56px">
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+<h1 class="ew-in" style="margin: 0; font-size: clamp(2.3rem, 3.8vw, 3.6rem); line-height: 1.04; font-weight: 800; letter-spacing: -1.5px">Missed pickups and flooded roads, on the record.</h1>
+<p class="ew-in ew-in-2" style="margin: 0; font-size: clamp(1.05rem, 1.5vw, 1.2rem); line-height: 1.6; color: {{t.muted}}; max-width: 32em; font-weight: 600">EkoWatch gives one Lagos ward a shared picture: which streets were collected, where drains are blocked, and which roads are flooded right now. Residents report it, neighbours confirm it, and operators record every pickup.</p>
+<div class="ew-in ew-in-3" style="display: flex; gap: 12px; flex-wrap: wrap; padding-top: 4px">
+<a href="SignIn.dc.html" class="btn-green" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 26px; background: #50C47C; color: #0B1D2E; border-radius: 12px; font-weight: 800; font-size: 18px; text-decoration: none">Sign in</a>
+<a href="#how" class="btn-ghost" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 22px; border: 2px solid rgba(255,255,255,0.75); color: #FFFFFF; border-radius: 12px; font-weight: 800; font-size: 18px; text-decoration: none; box-sizing: border-box">How it works</a>
+</div>
+</div>
+
+<div class="ew-in ew-in-2" style="flex: 1.3 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<div class="ew-stage {{stageClass}}" style="position: relative; height: clamp(340px, 33vw, 500px); border-radius: 28px; overflow: hidden; background: #0B1D2E; box-shadow: 0 32px 64px rgba(4, 14, 26, 0.38)">
+<img class="ew-kb" src="/_blob/fba97643ad112a9f714cfc1837717e3c" alt="A road under brown floodwater. A car and several kekes wade through it while traders stand at the edge." style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 32% 50%">
+<div aria-hidden="true" style="position: absolute; left: 0; right: 0; bottom: 0; height: 60%; background: linear-gradient(to top, rgba(11, 29, 46, 0.72), rgba(11, 29, 46, 0))"></div>
+
+<span class="ew-tag" style="position: absolute; top: 18px; left: 18px; display: inline-flex; align-items: center; min-height: 30px; padding: 0 12px; border-radius: 999px; background: #FDF0D5; color: #7A4A00; font-size: 13px; font-weight: 800">Sample report (fictional)</span>
+
+<div class="ew-chip" aria-hidden="true" style="position: absolute; top: 18px; right: 18px; display: flex; align-items: center; gap: 10px; padding: 10px 14px 10px 10px; border-radius: 14px; background: #FFFFFF; color: #0B1D2E; box-shadow: 0 10px 24px rgba(4, 14, 26, 0.25)">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 9px; background: #E3EEF9; color: #1A5FA8">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="10" rx="2"></rect><path d="M7 5v10M11 5v10M15 5v10M19 5v10"></path></svg>
+</span>
+<span style="display: flex; flex-direction: column; line-height: 1.2"><span style="font-size: 14px; font-weight: 800">Blocked drain reported</span><span style="font-size: 13px; font-weight: 600; color: #4A5A6B">Hughes Avenue, 4 confirmations</span></span>
+</div>
+
+<div aria-hidden="true" style="position: absolute; left: 36%; top: 46%; width: 0; height: 0">
+<span class="ew-ring" style="position: absolute; left: -36px; top: -36px; width: 72px; height: 72px; border-radius: 50%; border: 3px solid #FFFFFF"></span>
+<span class="ew-ring ew-ring-2" style="position: absolute; left: -36px; top: -36px; width: 72px; height: 72px; border-radius: 50%; border: 3px solid #FFFFFF"></span>
+<span class="ew-pin" style="position: absolute; left: -24px; top: -60px; display: flex; flex-direction: column; align-items: center">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #1A5FA8; border: 3px solid #FFFFFF; box-shadow: 0 8px 18px rgba(4, 14, 26, 0.4); color: #FFFFFF">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 10q2-2 4 0t4 0t4 0t4 0"></path><path d="M4 15q2-2 4 0t4 0t4 0t4 0"></path></svg>
+</span>
+<span style="width: 3px; height: 14px; background: #FFFFFF; border-radius: 2px"></span>
+</span>
+</div>
+
+<div class="ew-card" style="position: absolute; left: 18px; bottom: 18px; width: min(380px, calc(100% - 36px)); box-sizing: border-box; background: #FFFFFF; color: #0B1D2E; border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 44px rgba(4, 14, 26, 0.35)">
+<div class="ew-row" style="display: flex; align-items: center; gap: 12px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; background: #E3EEF9; color: #1A5FA8">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M3 9q3-3 6 0t6 0t6 0"></path><path d="M3 14q3-3 6 0t6 0t6 0"></path><path d="M3 19q3-3 6 0t6 0t6 0"></path></svg>
+</span>
+<span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; line-height: 1.25">
+<span style="font-size: 18px; font-weight: 800">Flooded road</span>
+<span style="font-size: 14px; font-weight: 600; color: #4A5A6B">Commercial Avenue, reported 20 min ago</span>
+</span>
+<span style="flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 10px; border-radius: 999px; background: #E3F5EA; color: #1E6B3A; font-size: 13px; font-weight: 800"><span style="width: 8px; height: 8px; border-radius: 50%; background: #2E8B57"></span>Current</span>
+</div>
+<div class="ew-row ew-row-2" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 14px; border-top: 1px solid #E3E8EE">
+<span style="font-size: 15px; font-weight: 700; color: #4A5A6B">Confirmed by neighbours</span>
+<span style="display: flex; align-items: center; gap: 10px">
+<span style="display: flex; gap: 4px" aria-hidden="true">
+<span class="ew-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #50C47C"></span>
+<span class="ew-dot ew-dot-2" style="width: 10px; height: 10px; border-radius: 50%; background: #50C47C"></span>
+<span class="ew-dot ew-dot-3" style="width: 10px; height: 10px; border-radius: 50%; background: #50C47C"></span>
+</span>
+<span style="position: relative; display: inline-block; width: 1ch; height: 28px; font-size: 24px; font-weight: 800; line-height: 28px">
+<span class="ew-c1" aria-hidden="true" style="position: absolute; left: 0; top: 0">1</span>
+<span class="ew-c2" aria-hidden="true" style="position: absolute; left: 0; top: 0">2</span>
+<span class="ew-c3" style="position: absolute; left: 0; top: 0">3</span>
+</span>
+</span>
+</div>
+<div class="ew-row ew-row-3" style="display: flex; flex-direction: column; gap: 8px">
+<div style="height: 6px; border-radius: 3px; background: #E3E8EE; overflow: hidden"><div class="ew-bar" style="width: 94%; height: 6px; border-radius: 3px; background: #1A5FA8"></div></div>
+<span style="font-size: 13px; font-weight: 600; color: #4A5A6B">Expires in 5 h 40 min unless someone reconfirms. Reporter's name is never shown.</span>
+</div>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap">
+<span style="font-size: 14px; color: {{t.muted}}; font-weight: 600">A flooded road in [LOCATION]. [PHOTO CREDIT]</span>
+<button type="button" onClick="{{replay}}" class="btn-ghost" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; background: transparent; border: 2px solid rgba(255,255,255,0.6); border-radius: 10px; color: #FFFFFF; font-family: inherit; font-weight: 800; font-size: 15px; cursor: pointer">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 4v5h5"></path></svg>
+Replay
+</button>
+</div>
+</div>
+</div>
+</header>
+
+<div class="{{tickerWrap}}" style="background: #FFFFFF; border-bottom: 1px solid #CBD5E1; display: flex; align-items: center; gap: 0; min-height: 60px">
+<div style="flex: none; display: flex; align-items: center; gap: 10px; padding: 0 16px 0 24px; border-right: 1px solid #CBD5E1; align-self: stretch">
+<span class="ew-live" aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: #50C47C; display: inline-block"></span>
+<span style="font-size: 14px; font-weight: 800; color: #0B1D2E; white-space: nowrap">Sample activity <span style="font-weight: 600; color: #4A5A6B">(fictional)</span></span>
+</div>
+<div style="flex: 1 1 auto; min-width: 0; overflow: hidden">
+<div class="ew-track" style="display: flex; width: max-content">
+<ul style="list-style: none; margin: 0; padding: 0; display: flex">
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #1A5FA8"></span>Blocked drain reported on Herbert Macaulay Way, confirmed by 3 neighbours</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #2E8B57"></span>Pickup recorded on Montgomery Road</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #1A5FA8"></span>Flooded road on Commercial Avenue, still current</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #C62828"></span>Missed pickup on Hughes Avenue, no record since Tuesday</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #B26A00"></span>Illegal dumping reported near Tejuosho Market</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #2E8B57"></span>Pickup recorded on Jibowu Street</li>
+</ul>
+<ul aria-hidden="true" style="list-style: none; margin: 0; padding: 0; display: flex">
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #1A5FA8"></span>Blocked drain reported on Herbert Macaulay Way, confirmed by 3 neighbours</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #2E8B57"></span>Pickup recorded on Montgomery Road</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #1A5FA8"></span>Flooded road on Commercial Avenue, still current</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #C62828"></span>Missed pickup on Hughes Avenue, no record since Tuesday</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #B26A00"></span>Illegal dumping reported near Tejuosho Market</li>
+<li style="display: flex; align-items: center; gap: 10px; padding: 0 28px; font-size: 15px; font-weight: 700; white-space: nowrap; height: 60px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #2E8B57"></span>Pickup recorded on Jibowu Street</li>
+</ul>
+</div>
+</div>
+<button type="button" onClick="{{togglePause}}" aria-label="{{pauseAria}}" style="flex: none; width: 60px; min-height: 60px; align-self: stretch; background: #FFFFFF; border: 0; border-left: 1px solid #CBD5E1; color: #0B1D2E; cursor: pointer; display: inline-flex; align-items: center; justify-content: center">
+<sc-if value="{{paused}}" hint-placeholder-val="{{ false }}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4l13 8l-13 8z"></path></svg>
+</sc-if>
+<sc-if value="{{running}}" hint-placeholder-val="{{ true }}">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>
+</sc-if>
+</button>
+</div>
+
+<main>
+<section id="how" style="max-width: 1080px; margin: 0 auto; padding: 80px 24px 24px">
+<h2 class="ew-reveal" style="margin: 0 0 8px; font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 800; letter-spacing: -0.5px; line-height: 1.15">How it works</h2>
+<p class="ew-reveal" style="margin: 0 0 40px; font-size: 18px; line-height: 1.55; color: #4A5A6B; max-width: 36em">From one resident's report to a street the whole ward can see is missed.</p>
+<ol style="position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(176px, 1fr)); gap: 28px">
+<div class="ew-steps-line" aria-hidden="true" style="position: absolute; left: 20px; right: 20px; top: 19px; height: 2px; background: #0B1D2E"></div>
+<li class="ew-step" style="position: relative; display: flex; flex-direction: column; gap: 10px">
+<span class="ew-num" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; border: 2px solid #0B1D2E; box-sizing: border-box; font-weight: 800; font-size: 18px">1</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 800">A resident reports</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A5A6B">A blocked drain on their street, with a photo where they can and a short note.</p>
+</li>
+<li class="ew-step" style="position: relative; display: flex; flex-direction: column; gap: 10px">
+<span class="ew-num" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; border: 2px solid #0B1D2E; box-sizing: border-box; font-weight: 800; font-size: 18px">2</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 800">A neighbour confirms</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A5A6B">Each person can confirm a report once. Reports with more confirmations rank higher.</p>
+</li>
+<li class="ew-step" style="position: relative; display: flex; flex-direction: column; gap: 10px">
+<span class="ew-num" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; border: 2px solid #0B1D2E; box-sizing: border-box; font-weight: 800; font-size: 18px">3</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 800">The ward office sees it</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A5A6B">On its dashboard, next to missed pickups and roads that are flooded now.</p>
+</li>
+<li class="ew-step" style="position: relative; display: flex; flex-direction: column; gap: 10px">
+<span class="ew-num" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; border: 2px solid #0B1D2E; box-sizing: border-box; font-weight: 800; font-size: 18px">4</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 800">The operator records pickups</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A5A6B">After collecting, they mark the street done. Once per street, per day.</p>
+</li>
+<li class="ew-step" style="position: relative; display: flex; flex-direction: column; gap: 10px">
+<span class="ew-num" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #0B1D2E; color: #FFFFFF; border: 2px solid #0B1D2E; box-sizing: border-box; font-weight: 800; font-size: 18px">5</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 800">No record means missed</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A5A6B">If a collection day passes with nothing recorded, the street shows as missed. Nobody has to report it.</p>
+</li>
+</ol>
+</section>
+
+<section style="max-width: 1080px; margin: 0 auto; padding: 80px 24px 24px">
+<h2 class="ew-reveal" style="margin: 0 0 8px; font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 800; letter-spacing: -0.5px; line-height: 1.15">Four things you can report</h2>
+<p class="ew-reveal" style="margin: 0 0 32px; font-size: 18px; line-height: 1.55; color: #4A5A6B; max-width: 36em">Pick the one that matches what you see. A photo helps, but a short note is enough.</p>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px">
+<div class="ew-card ew-card-l" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<span class="ew-ico" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: #FDECEC; color: #C62828">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M9 7V4h6v3"></path><path d="M6 7l1 13h10l1-13"></path><path d="M10 11l4 4M14 11l-4 4"></path></svg>
+</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 800">Missed pickup</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A5A6B">Collection day came and went and nobody came. EkoWatch also flags it on its own when no pickup was recorded.</p>
+</div>
+<div class="ew-card ew-card-p" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<span class="ew-ico" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: #FDF0D5; color: #7A4A00">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"></path><path d="M5 20l2-6h4l2 6"></path><path d="M12 20l2.5-8h4L21 20"></path><path d="M9 14V9l2-2"></path></svg>
+</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 800">Illegal dumping</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A5A6B">Refuse left on a corner, a verge or an empty plot.</p>
+</div>
+<div class="ew-card ew-card-p" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<span class="ew-ico ew-ico-bob" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: #E3EEF9; color: #1A5FA8">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="10" rx="2"></rect><path d="M7 5v10M11 5v10M15 5v10M19 5v10"></path><path d="M6 19h4M14 19h4"></path></svg>
+</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 800">Blocked drain</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A5A6B">A drain choked with refuse or silt, ideally reported before the rain turns it into a flood.</p>
+</div>
+<div class="ew-card ew-card-r" style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 12px">
+<span class="ew-ico ew-ico-bob" style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 12px; background: #E3EEF9; color: #1A5FA8">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9q3-3 6 0t6 0t6 0"></path><path d="M3 14q3-3 6 0t6 0t6 0"></path><path d="M3 19q3-3 6 0t6 0t6 0"></path></svg>
+</span>
+<h3 style="margin: 0; font-size: 19px; font-weight: 800">Flooded road</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.55; color: #4A5A6B">Shows as current for 6 hours, then expires unless a neighbour confirms it again.</p>
+</div>
+</div>
+</section>
+
+<section style="max-width: 1080px; margin: 0 auto; padding: 88px 24px 24px">
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 40px">
+<div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 18px">
+<p style="margin: 0; font-size: clamp(1.9rem, 3.6vw, 3rem); font-weight: 800; line-height: 1.12; letter-spacing: -0.8px"><span class="ew-word">Refuse</span> <span class="ew-word">that</span> <span class="ew-word">isn't</span> <span class="ew-word">collected</span> <span class="ew-word">ends</span> <span class="ew-word">up</span> <span class="ew-word">in</span> <span class="ew-word">drains.</span> <span class="ew-word" style="color: #1A5FA8">Blocked</span> <span class="ew-word" style="color: #1A5FA8">drains</span> <span class="ew-word" style="color: #1A5FA8">flood</span> <span class="ew-word" style="color: #1A5FA8">roads.</span></p>
+<p class="ew-reveal" style="margin: 0; font-size: 18px; line-height: 1.55; color: #4A5A6B; max-width: 30em">That's why EkoWatch keeps both on one record for each street, so the ward can see one problem leading to the next.</p>
+</div>
+<figure style="flex: 1 1 420px; margin: 0; display: flex; flex-direction: column; gap: 10px; max-width: 634px">
+<div class="ew-wipe" style="border-radius: 20px; overflow: hidden; background: #CBD5E1">
+<img src="/_blob/8d5695cc54f821323494757e57aea9b4" alt="Officials and sanitation workers in high-visibility vests clearing a heap of refuse from a Lagos street with shovels." style="display: block; width: 100%; height: auto; filter: contrast(0.86) saturate(0.82) brightness(1.04)">
+</div>
+<figcaption style="font-size: 14px; color: #4A5A6B">A street clean-up in Lagos. [PHOTO CREDIT]</figcaption>
+</figure>
+</div>
+</section>
+
+<section style="max-width: 1080px; margin: 0 auto; padding: 88px 24px 24px">
+<h2 class="ew-reveal" style="margin: 0 0 8px; font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 800; letter-spacing: -0.5px; line-height: 1.15">Three roles, three views</h2>
+<p class="ew-reveal" style="margin: 0 0 32px; font-size: 18px; line-height: 1.55; color: #4A5A6B; max-width: 36em">Your role comes with your account. Nobody picks one on screen.</p>
+<div style="position: relative">
+<div class="ew-rule-line" aria-hidden="true" style="height: 2px; background: #0B1D2E"></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0">
+<div class="ew-step" style="padding: 24px 24px 24px 0; display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-size: 22px; font-weight: 800">Residents</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4A5A6B">Report problems, confirm what neighbours report, and check the collection days for their street.</p>
+</div>
+<div class="ew-step" style="padding: 24px 24px 24px 0; display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-size: 22px; font-weight: 800">Waste operators</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4A5A6B">See only the streets assigned to them, and mark each one done after collection.</p>
+</div>
+<div class="ew-step" style="padding: 24px 24px 24px 0; display: flex; flex-direction: column; gap: 10px">
+<h3 style="margin: 0; font-size: 22px; font-weight: 800">The ward office</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #4A5A6B">Sees missed pickups by operator, blocked drains and current floods across the whole ward.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section style="max-width: 1080px; margin: 0 auto; padding: 64px 24px 24px">
+<div class="ew-reveal" style="background: #0B1D2E; color: #FFFFFF; border-radius: 20px; padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 28px">
+<h2 style="margin: 0; font-size: clamp(1.6rem, 2.8vw, 2.25rem); font-weight: 800; letter-spacing: -0.5px; line-height: 1.15">Rules built into EkoWatch</h2>
+<ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px 32px">
+<li class="ew-tick" style="display: flex; gap: 12px; align-items: flex-start">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#50C47C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M5 12l5 5l9-10"></path></svg>
+<span style="font-size: 17px; line-height: 1.5; color: #E6EDF5; font-weight: 600">Your name never appears on a report.</span>
+</li>
+<li class="ew-tick" style="display: flex; gap: 12px; align-items: flex-start">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#50C47C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M5 12l5 5l9-10"></path></svg>
+<span style="font-size: 17px; line-height: 1.5; color: #E6EDF5; font-weight: 600">Location data is removed from photos before they're stored.</span>
+</li>
+<li class="ew-tick" style="display: flex; gap: 12px; align-items: flex-start">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#50C47C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M5 12l5 5l9-10"></path></svg>
+<span style="font-size: 17px; line-height: 1.5; color: #E6EDF5; font-weight: 600">Only the ward office sees how each operator is performing.</span>
+</li>
+<li class="ew-tick" style="display: flex; gap: 12px; align-items: flex-start">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#50C47C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M5 12l5 5l9-10"></path></svg>
+<span style="font-size: 17px; line-height: 1.5; color: #E6EDF5; font-weight: 600">Every list tells you how old its newest report is.</span>
+</li>
+</ul>
+<div style="border-top: 1px solid #2C4157; padding-top: 22px; display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #B8C7D9; max-width: 48em">EkoWatch is a community record for one ward. It doesn't forecast floods, send out crews or replace any agency.</p>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #B8C7D9; max-width: 48em">A web page can't prove a photo was taken on the spot rather than picked from a gallery, so every photo is stamped with the time it reached us.</p>
+</div>
+</div>
+</section>
+
+<section style="max-width: 1080px; margin: 0 auto; padding: 56px 24px 80px">
+<div class="ew-reveal" style="display: flex; flex-wrap: wrap; align-items: stretch; border: 2px solid #0B1D2E; border-radius: 24px; overflow: hidden; background: #FFFFFF">
+<div style="flex: 1 1 380px; min-height: 280px; position: relative; background: #CBD5E1">
+<img src="/_blob/d2097b82ccd124b6be67973612d26a23" alt="A busy Lagos street with standing water. A keke wades through it as people walk along the edge." style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; filter: contrast(0.92) saturate(0.9)">
+</div>
+<div style="flex: 1 1 380px; padding: clamp(24px, 4vw, 44px); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 14px">
+<h2 style="margin: 0; font-size: clamp(1.5rem, 2.6vw, 2.1rem); font-weight: 800; letter-spacing: -0.5px; line-height: 1.2">Try it with a demo account</h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.55; color: #4A5A6B; max-width: 30em">Sign in as a resident, an operator or the ward office. Every person and report in the demo is fictional; the place names are real.</p>
+<a href="SignIn.dc.html" class="btn-green" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; background: #50C47C; color: #0B1D2E; border-radius: 12px; font-weight: 800; font-size: 18px; text-decoration: none; margin-top: 6px">Sign in</a>
+<span style="font-size: 13px; color: #4A5A6B">[PHOTO CREDIT]</span>
+</div>
+</div>
+</section>
+</main>
+
+<footer style="border-top: 1px solid #CBD5E1; background: #FFFFFF">
+<div style="max-width: 1080px; margin: 0 auto; padding: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px">
+<span style="display: flex; align-items: center; gap: 8px">
+<span style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: #0B1D2E"><img src="/_blob/15a57f253fea09bdb3a91f9924af720e" alt="" style="width: 26px; height: 22px; display: block"></span>
+<span style="font-size: 20px; font-weight: 800; letter-spacing: -0.3px"><span style="color: #0B1D2E">eko</span><span style="color: #1A5FA8">watch</span></span>
+</span>
+<span style="font-size: 15px; color: #4A5A6B">A TeSA Africa Cohort 6 capstone project by Team 1, for Yaba ward (placeholder).</span>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"headerColour":{"editor":"enum","options":["Lagoon blue","Teal","Navy"],"default":"Lagoon blue"},"$preview":{"width":1536,"height":730}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var themes = {
+      'Lagoon blue': { bg: '#0F5AA8', muted: '#DCEBFA', watch: '#A8E0FF', ring: '#FFD24A' },
+      'Teal': { bg: '#0A6B6B', muted: '#D6F5EC', watch: '#9FF0C6', ring: '#FFD24A' },
+      'Navy': { bg: '#0B1D2E', muted: '#B8C7D9', watch: '#3FA7F2', ring: '#7CC4FF' }
+    };
+    var t = themes[this.props.headerColour] || themes['Lagoon blue'];
+    var s = this.state || {};
+    var playing = s.play !== false;
+    var paused = s.paused === true;
+    var self = this;
+    return {
+      t: t,
+      stageClass: playing ? 'play' : '',
+      tickerWrap: paused ? 'ew-paused' : '',
+      paused: paused,
+      running: !paused,
+      pauseAria: paused ? 'Play the activity ticker' : 'Pause the activity ticker',
+      replay: function () {
+        self.setState({ play: false });
+        setTimeout(function () { self.setState({ play: true }); }, 60);
+      },
+      togglePause: function () { self.setState({ paused: !paused }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
