@@ -1,0 +1,36 @@
+# EkoWatch frontend checks: lint, typecheck, test and build.
+#
+# Qocent Deploy builds and deploys main by itself whenever main changes, so this
+# workflow does not deploy. It is the gate instead: branch protection on main makes
+# the "check" job a required status, so a pull request cannot merge (and Qocent
+# never sees the code) until every check passes. See docs/decisions.md.
+name: Frontend
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A newer push to the same branch or pull request cancels the older run.
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      # Skipped until Vitest is installed in the foundation step; runs from then on.
+      - run: npm run test --if-present
+      - run: npm run build
