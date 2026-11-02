@@ -170,6 +170,11 @@ Every entry here was proposed by Claude Code overnight, without a chance to ask.
 - **Change:** the page asks `GET /operators/me/streets?fromDate=today&toDate=today` and `GET /collection-schedules` for the operator's ward and today (size 100), and shows assigned streets that have a schedule today. A street that was marked earlier shows "Marked done at 09:58" (Lagos time). A disputed one says "Marked done at 09:58, but residents reported the pickup as missed." with a link to the missed-pickup reports. If the PUT answers 200 (already recorded), the row says "Already marked done today at 09:58. Refreshed." If the reply is lost, the page says it can't tell yet, re-reads the list, and says marking twice is safe.
 - **Proposed by Claude Code overnight, Agreed by:** pending
 
+### 2026-11-02 · Report a problem details
+- **Change:** the form follows `ReportNew.dc.html` without "Use my location": the street is enough on its own, and asking for the browser's position adds a permission prompt and precise coordinates for no gain in the MVP. A resident with no ward gets "Choose your street first" with a link to `/setup` instead of the form. The collection-day list shows the street's scheduled days in the last 30 days up to today (Lagos), newest first. On success the user lands on the new report with a "Report sent" toast. If the photo upload fails, the message adds "You can also remove the photo and send the report without it."
+- **Idempotency:** the key belongs to the request body. A retry of the same body (and the same photoId) reuses it; any change to the report makes a new one, so the service never sees a reused key with different details.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
 ### 2026-11-02 · Step 5 built before steps 3 and 4
 - **Change:** the operator's Today's streets (step 5) was built straight after step 2. The one allowed operator write is "today's Fictional Bamboo Street", and Bamboo Street is only scheduled on 2 November; after midnight in Lagos "today" would no longer include it. Commits stay one per step.
 - **Proposed by Claude Code overnight, Agreed by:** pending
@@ -202,6 +207,9 @@ Still open, or new:
 
 - 2026-11-02 17:40 UTC, before step 2: identical.
 - Found while wiring step 2 and 5 (live `curl`): `GET /operators/me/streets` for demo8, the operator with no streets, answers `200 []`, not 403 `WARD_ASSIGNMENT_REQUIRED`. `GET /collection-schedules` returns a `Page` (`items`, `page`, `size`, `totalElements`, `totalPages`), like `GET /reports`.
+
+- 2026-11-02 22:12 UTC, before step 3: identical.
+- **`POST /photos` answers 500 `INTERNAL_ERROR`** (2026-11-02, about 22:40 UTC) for a valid 272 KB JPEG, from the app and from plain `curl -F file=@photo.jpg;type=image/jpeg` alike. Request IDs `ba38cbf5-886a-44ca-aca7-8fe93dc1f51b` and `bb49584f-4098-4979-84a4-b3b82d2971c8`, for Esther and Adedayo. Reports without a photo work.
 
 ### Demo accounts on the live backend (2026-11-02)
 

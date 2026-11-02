@@ -1,7 +1,7 @@
 // Reports (build plan section 8). Endpoint keys are the OpenAPI operationIds.
 import { api } from '@/services/api'
 import { checkReport } from '@/services/checkReply'
-import type { FloodStatus, Page, ReportType, ReportView, Uuid } from '@/types/ekowatch'
+import type { CreateReportRequest, FloodStatus, Page, ReportType, ReportView, Uuid } from '@/types/ekowatch'
 
 export type ReportSort = 'CONFIRMATIONS' | 'NEWEST'
 
@@ -15,6 +15,9 @@ export type ListReportsArgs = {
   page?: number
   size?: number
 }
+
+// One Idempotency-Key per report the user means to send, reused on every retry of it.
+export type CreateReportArgs = { body: CreateReportRequest; idempotencyKey: string }
 
 export const reportApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -31,7 +34,22 @@ export const reportApi = api.injectEndpoints({
       transformResponse: checkReport,
       providesTags: (_result, _error, reportId) => [{ type: 'Report', id: reportId }],
     }),
+    createReport: build.mutation<ReportView, CreateReportArgs>({
+      query: ({ body, idempotencyKey }) => ({
+        url: '/reports',
+        method: 'POST',
+        body,
+        headers: { 'Idempotency-Key': idempotencyKey },
+      }),
+      transformResponse: checkReport,
+      // Even after a failure: a lost reply may still have created the report.
+      invalidatesTags: [
+        { type: 'Report', id: 'LIST' },
+        { type: 'Hazards', id: 'LIST' },
+        { type: 'Dashboard', id: 'LIST' },
+      ],
+    }),
   }),
 })
 
-export const { useListReportsQuery, useGetReportQuery } = reportApi
+export const { useListReportsQuery, useGetReportQuery, useCreateReportMutation } = reportApi

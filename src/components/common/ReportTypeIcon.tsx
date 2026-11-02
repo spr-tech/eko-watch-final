@@ -29,18 +29,17 @@ const ICONS: Record<ReportType, { tone: string; paths: ReactNode }> = {
   },
 }
 
-export function ReportTypeIcon({ reportType, size = 'md' }: { reportType: ReportType; size?: 'md' | 'lg' }) {
+const SIZES = {
+  sm: { box: 'size-9 rounded-md', px: 20 },
+  md: { box: 'size-11 rounded-xl', px: 22 },
+  lg: { box: 'size-13 rounded-card', px: 26 },
+}
+
+export function ReportTypeIcon({ reportType, size = 'md' }: { reportType: ReportType; size?: keyof typeof SIZES }) {
   const { tone, paths } = ICONS[reportType]
-  const px = size === 'lg' ? 26 : 22
+  const { box, px } = SIZES[size]
   return (
-    <span
-      aria-hidden="true"
-      className={cn(
-        'flex shrink-0 items-center justify-center',
-        size === 'lg' ? 'size-13 rounded-card' : 'size-11 rounded-xl',
-        tone,
-      )}
-    >
+    <span aria-hidden="true" className={cn('flex shrink-0 items-center justify-center', box, tone)}>
       <svg width={px} height={px} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         {paths}
       </svg>
