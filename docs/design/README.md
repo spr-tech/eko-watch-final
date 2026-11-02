@@ -62,7 +62,7 @@ Build these instead of what the design shows.
    - 404 `RESOURCE_NOT_FOUND`: "This report doesn't exist." with Back to reports.
    - Network or server error: "We couldn't load this report. Check your connection, then try again." with Try again.
    Never say a report "may have been removed"; nothing deletes reports.
-5. **Photos on the landing and sign-in pages.** The design has a photo slot with "[LOCATION]" and "[PHOTO CREDIT]". Do not ship those words. Until I supply a photo I'm allowed to use, with its credit, use the plain brand-colour panel and no caption.
+5. **Photos on the landing and sign-in pages.** The design has a photo slot with "[LOCATION]" and "[PHOTO CREDIT]". Do not ship those words. The photos in `public/` are for the capstone demo only, with sources and credits pending (see `docs/decisions.md`, 2026-11-02). Show no caption until a photo's credit is confirmed.
 6. **Operators and Reports.** The design hides Reports from operators. We decided the opposite (see `docs/decisions.md`): operators get **Reports** in their sidebar and tab bar, after Today's streets and before Hazards. They see the list and report details read-only: no Confirm button, no "Report a problem" link or button, and no "You confirmed this" state. Reuse the ward office's read-only layout. `NoAccess.dc.html` stays the pattern for any page a role can't open, but its example (an operator refused Reports) no longer applies.
 7. **"You reported this".** Only build it if `reportedByMe` is added to `ReportView`. The current design does not show it.
 8. **Fit.** The boards are drawn at 1536 × 730, but that doesn't prove the content fits. Check each screen against the viewport rules in `CLAUDE.md` and report anything that needs scrolling.

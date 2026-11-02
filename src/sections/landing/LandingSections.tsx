@@ -1,8 +1,10 @@
 // The landing page below the hero (Main.dc.html): how it works, the four report types,
 // why waste and floods go together, the three roles, the built-in rules and the
-// sign-in call to action. The photos and "[PHOTO CREDIT]" captions are left out
-// (docs/design/README.md correction 5); so is the "Sample activity" ticker, which
-// lists made-up records.
+// sign-in call to action. The photos are for the capstone demo only, with sources and
+// credits pending, so their "[PHOTO CREDIT]" captions are left out (docs/decisions.md).
+// The "Sample activity" ticker, which lists made-up records, is left out too. The
+// design's scroll-triggered reveals are not built yet. Both photos are below the fold,
+// so they load lazily.
 import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { CheckIcon } from '@/components/common/Icons'
@@ -73,7 +75,7 @@ const RULES = [
 
 function Section({ id, className, children }: { id?: string; className?: string; children: ReactNode }) {
   return (
-    <section id={id} className={cn('mx-auto max-w-270 scroll-mt-20 px-6', className)}>
+    <section id={id} className={cn('mx-auto w-full max-w-270 scroll-mt-20 px-6', className)}>
       {children}
     </section>
   )
@@ -118,13 +120,29 @@ export function LandingSections() {
       </Section>
 
       <Section className="pt-20">
-        <p className="max-w-[22em] text-[clamp(1.9rem,3.6vw,3rem)] leading-tight font-extrabold tracking-[-0.5px]">
-          Refuse that isn't collected ends up in drains. <strong className="text-primary">Blocked drains flood roads.</strong>
-        </p>
-        <p className={leadClass}>
-          That's why EkoWatch keeps both on one record for each street, so the ward can see one problem leading to the
-          next.
-        </p>
+        <div className="flex flex-wrap items-center gap-10">
+          <div className="flex flex-[1_1_380px] flex-col gap-4.5">
+            <p className="text-[clamp(1.9rem,3.6vw,3rem)] leading-tight font-extrabold tracking-[-0.5px]">
+              Refuse that isn't collected ends up in drains.{' '}
+              <strong className="text-primary">Blocked drains flood roads.</strong>
+            </p>
+            <p className="max-w-[30em] text-lg text-text-muted">
+              That's why EkoWatch keeps both on one record for each street, so the ward can see one problem leading to
+              the next.
+            </p>
+          </div>
+          <div className="max-w-158.5 flex-[1_1_420px] overflow-hidden rounded-[20px] bg-border">
+            <img
+              src="/drain-clearing-crew-2.webp"
+              alt="Officials and sanitation workers in high-visibility vests and masks shovelling a heap of refuse from a street."
+              width={1024}
+              height={683}
+              loading="lazy"
+              decoding="async"
+              className="block h-auto w-full contrast-[0.86] saturate-[0.82] brightness-[1.04]"
+            />
+          </div>
+        </div>
       </Section>
 
       <Section className="pt-20">
@@ -167,18 +185,33 @@ export function LandingSections() {
       </Section>
 
       <Section className="pt-16 pb-20">
-        <div className="flex flex-col items-start gap-4 rounded-3xl border-2 border-text bg-bg p-[clamp(24px,4vw,40px)]">
-          <h2 className={h2Class}>Try it with a demo account</h2>
-          <p className="max-w-[36em] text-lg text-text-muted">
-            Sign in as a resident, an operator or the ward office. Every person and report in the demo is fictional; the
-            place names are real.
-          </p>
-          <Link
-            to={ROUTES.login}
-            className="inline-flex min-h-13 items-center rounded-xl bg-action px-6.5 text-lg font-extrabold text-text hover:bg-action-hover"
-          >
-            Sign in
-          </Link>
+        <div className="flex flex-wrap items-stretch overflow-hidden rounded-3xl border-2 border-text bg-bg">
+          <div className="relative min-h-70 flex-[1_1_380px] bg-border">
+            <img
+              src="/flooded-market-street-3.webp"
+              alt="A flooded street. A yellow tricycle drives through the water as people walk along the edge past a parked container lorry."
+              width={1280}
+              height={836}
+              loading="lazy"
+              decoding="async"
+              className="absolute inset-0 size-full object-cover object-[50%_60%] contrast-[0.92] saturate-[0.9]"
+            />
+          </div>
+          <div className="flex flex-[1_1_380px] flex-col items-start justify-center gap-3.5 p-[clamp(24px,4vw,44px)]">
+            <h2 className="text-[clamp(1.5rem,2.6vw,2.1rem)] leading-tight font-extrabold tracking-[-0.5px]">
+              Try it with a demo account
+            </h2>
+            <p className="max-w-[30em] text-[17px] text-text-muted">
+              Sign in as a resident, an operator or the ward office. Every person and report in the demo is fictional;
+              the place names are real.
+            </p>
+            <Link
+              to={ROUTES.login}
+              className="mt-1.5 inline-flex min-h-13 items-center rounded-xl bg-action px-7 text-lg font-extrabold text-text hover:bg-action-hover"
+            >
+              Sign in
+            </Link>
+          </div>
         </div>
       </Section>
     </>

@@ -84,11 +84,24 @@ _None yet._
 - **Proposed by:** Claude Code on Muizz's overnight instructions · **Agreed by:** pending
 
 ### 2026-11-02 · Landing page leaves out the sample activity
+_The sample report card part is reversed; see "Sample report card back in the landing hero" below. The ticker stays out._
 - **Change:** the landing page leaves out the design's "Sample activity (fictional)" ticker and the animated sample report card in the hero. The photo slot is a plain dark panel with the EkoWatch icon.
 - **Why:** both are hard-coded made-up records, and CLAUDE.md allows no sample arrays or placeholder records in `src/`. The photos have no licence or credit yet (docs/design/README.md correction 5).
 - **Cost:** the hero shows less of what the app does.
 - **Reverse if:** the team agrees that clearly labelled illustrative copy on the landing page isn't "mock data", or the ticker can read real recent activity from a public endpoint.
 - **Proposed by:** Claude Code on Muizz's overnight instructions · **Agreed by:** pending
+
+### 2026-11-02 · Photos on the landing and sign-in pages, for the demo only
+- **Change:** the landing hero, the "Refuse that isn't collected" section, the demo account card and the sign-in panel show photos (`public/flooded-road-traffic-1.webp`, `drain-clearing-crew-2.webp`, `flooded-market-street-3.webp`, `residents-wading-flood-4-1600.jpg`, `residents-wading-flood-5.jpg`) instead of plain panels. Photos used for the capstone demo; sources and credits pending; not cleared for public launch. No captions until the credits are confirmed, so no "[PHOTO CREDIT]", "[LOCATION]" or place names are shown. The sign-in panel alternates its two photos every 7 seconds, with a Pause/Play button, and shows only the first under reduced motion. `residents-wading-flood-4-1600.jpg` is a 1600px-wide copy of the 4895px original, made for page weight. That photo is not referred to as Lagos anywhere.
+- **Why:** the design uses photos in these slots; the plain panels made the public pages read as unfinished.
+- **Cost:** the photos must be replaced or credited before any public launch.
+- **Reverse if:** a photo's source can't be confirmed or its owner objects.
+- **Agreed by:** Muizz Jamiu
+
+### 2026-11-02 · Sample report card back in the landing hero
+- **Change:** the design's "Flooded road" sample report card returns to the hero photo, labelled "Sample report (fictional)", with its animation (pin drop, card slide-in, confirmation dots, expiry bar) after the hero's on-load entrance. It is fixed display copy written in `src/sections/landing/LandingHero.tsx`, not an array or anything a feature screen reads. Under reduced motion the finished card shows with no animation. The design's "Blocked drain reported" chip and Replay button are not built.
+- **Why:** reverses the card part of "Landing page leaves out the sample activity" under its "Reverse if" condition: clearly labelled illustrative copy on the landing page isn't mock data. The ticker stays out.
+- **Agreed by:** Muizz Jamiu
 
 ## Contract differences found in the deployed backend (2026-11-01)
 
