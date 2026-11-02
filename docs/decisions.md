@@ -96,12 +96,12 @@ _The sample report card part is reversed; see "Sample report card back in the la
 - **Why:** the design uses photos in these slots; the plain panels made the public pages read as unfinished.
 - **Cost:** the photos must be replaced or credited before any public launch.
 - **Reverse if:** a photo's source can't be confirmed or its owner objects.
-- **Agreed by:** [your name / who agreed]
+- **Agreed by:** Muizz Jamiu
 
 ### 2026-11-02 · Sample report card back in the landing hero
 - **Change:** the design's "Flooded road" sample report card returns to the hero photo, labelled "Sample report (fictional)", with its animation (pin drop, card slide-in, confirmation dots, expiry bar) after the hero's on-load entrance. It is fixed display copy written in `src/sections/landing/LandingHero.tsx`, not an array or anything a feature screen reads. Under reduced motion the finished card shows with no animation. The design's "Blocked drain reported" chip and Replay button are not built.
 - **Why:** reverses the card part of "Landing page leaves out the sample activity" under its "Reverse if" condition: clearly labelled illustrative copy on the landing page isn't mock data. The ticker stays out.
-- **Agreed by:** [your name / who agreed]
+- **Agreed by:** Muizz Jamiu
 
 ## Contract differences found in the deployed backend (2026-11-01)
 
