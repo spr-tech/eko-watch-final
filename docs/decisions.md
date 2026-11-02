@@ -179,6 +179,10 @@ Every entry here was proposed by Claude Code overnight, without a chance to ask.
 - **Change:** residents see "Confirm it's still there" until they have confirmed, then "You confirmed this". On an expired flood they confirmed before, the button reads "Confirm it again" (it refreshes the evidence; the count doesn't go up). Because `ReportView` has no `reportedByMe`, a resident also sees the button on their own report; pressing it gets the 409 and "You can't confirm your own report. Your neighbours can confirm it if they see it too." 400, 403, 404 and 409 undo the change; a lost reply or a 5xx keeps it and says "We can't tell yet if your confirmation was saved." with Check again, which reads the report from the service.
 - **Proposed by Claude Code overnight, Agreed by:** pending
 
+### 2026-11-02 · Ward dashboard details
+- **Change:** the range is the last 30 days up to today in Lagos (`fromDate` = today − 29). The two side lists ("Most-confirmed blocked-drain reports", top 3; "Current flood reports", up to 5) come from `GET /reports`, since the dashboard response has counts only. "Computed today at 23:55" comes from `generatedAt`. The disputed card uses a warning icon. The empty state follows design correction 3; an empty flood list says "No current flood reports. That doesn't mean the roads are clear, only that no one has reported flooding recently."
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
 ### 2026-11-02 · Step 5 built before steps 3 and 4
 - **Change:** the operator's Today's streets (step 5) was built straight after step 2. The one allowed operator write is "today's Fictional Bamboo Street", and Bamboo Street is only scheduled on 2 November; after midnight in Lagos "today" would no longer include it. Commits stay one per step.
 - **Proposed by Claude Code overnight, Agreed by:** pending
@@ -214,6 +218,7 @@ Still open, or new:
 
 - 2026-11-02 22:12 UTC, before step 3: identical.
 - 2026-11-02 22:38 UTC, before step 4: identical.
+- 2026-11-02 22:49 UTC, before step 6: identical.
 - **`POST /photos` answers 500 `INTERNAL_ERROR`** (2026-11-02, about 22:40 UTC) for a valid 272 KB JPEG, from the app and from plain `curl -F file=@photo.jpg;type=image/jpeg` alike. Request IDs `ba38cbf5-886a-44ca-aca7-8fe93dc1f51b` and `bb49584f-4098-4979-84a4-b3b82d2971c8`, for Esther and Adedayo. Reports without a photo work.
 
 ### Demo accounts on the live backend (2026-11-02)

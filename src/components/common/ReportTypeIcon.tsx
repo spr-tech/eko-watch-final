@@ -30,6 +30,7 @@ const ICONS: Record<ReportType, { tone: string; paths: ReactNode }> = {
 }
 
 const SIZES = {
+  xs: { box: 'size-8 rounded-[9px]', px: 18 },
   sm: { box: 'size-9 rounded-md', px: 20 },
   md: { box: 'size-11 rounded-xl', px: 22 },
   lg: { box: 'size-13 rounded-card', px: 26 },
