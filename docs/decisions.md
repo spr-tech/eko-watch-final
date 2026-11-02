@@ -166,6 +166,10 @@ Every entry here was proposed by Claude Code overnight, without a chance to ask.
 - **Change:** ward office and operators with an empty list: "No reports in your ward yet. Reports from residents will show here as they come in." (no Report a problem button). Current floods only with no results: "No current flood reports. That does not mean the roads are clear, only that no one has reported flooding recently." Report page: a current flood says "Expires in 3 h unless someone confirms it again"; an expired one says "No recent confirmations. This doesn't mean the road is clear."; a missed pickup says "Collection day missed: Friday 30 October". Operators: "Operators see confirmations but do not confirm reports." A reply with an enum value the app doesn't know: "EkoWatch sent a reply this app doesn't recognise." A ward office that can see several wards gets a "Choose a ward" list (`?ward=` in the address).
 - **Proposed by Claude Code overnight, Agreed by:** pending
 
+### 2026-11-02 · Today's streets details
+- **Change:** the page asks `GET /operators/me/streets?fromDate=today&toDate=today` and `GET /collection-schedules` for the operator's ward and today (size 100), and shows assigned streets that have a schedule today. A street that was marked earlier shows "Marked done at 09:58" (Lagos time). A disputed one says "Marked done at 09:58, but residents reported the pickup as missed." with a link to the missed-pickup reports. If the PUT answers 200 (already recorded), the row says "Already marked done today at 09:58. Refreshed." If the reply is lost, the page says it can't tell yet, re-reads the list, and says marking twice is safe.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
 ### 2026-11-02 · Step 5 built before steps 3 and 4
 - **Change:** the operator's Today's streets (step 5) was built straight after step 2. The one allowed operator write is "today's Fictional Bamboo Street", and Bamboo Street is only scheduled on 2 November; after midnight in Lagos "today" would no longer include it. Commits stay one per step.
 - **Proposed by Claude Code overnight, Agreed by:** pending

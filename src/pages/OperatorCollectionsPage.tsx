@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '@/components/common/PlaceholderPage'
+import { TodaysStreetsView } from '@/sections/operator/TodaysStreetsView'
 
 export function OperatorCollectionsPage() {
-  return <PlaceholderPage title="Today's streets" component="OperatorCollectionsPage" />
+  return <TodaysStreetsView />
 }
