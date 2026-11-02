@@ -13,8 +13,10 @@ import { useRole } from '@/hooks/useRole'
 
 const MAIN_ID = 'main-content'
 
+// Rendered by RequireSession only when there is a session, so there is a role.
 export function AppLayout() {
   const role = useRole()
+  if (!role) return null
   return (
     <div className="flex min-h-dvh flex-col">
       <SkipLink targetId={MAIN_ID} />

@@ -196,7 +196,7 @@ Stable codes: `VALIDATION_FAILED`, `UNAUTHENTICATED`, `FORBIDDEN`, `RESOURCE_NOT
 EkoWatch must look right at 100% browser zoom on an ordinary laptop. Users should never need to zoom out to see a screen.
 
 - Target viewports (CSS pixels, after browser chrome): 1536 × 730 (a 1920 × 1080 screen at 125% Windows scaling), 1366 × 650 (a 1366 × 768 laptop), and 390 × 760 (phone).
-- On the sign-in page, the whole card fits in the viewport without page scroll at 1536 × 730. That includes the heading, both fields, an error message under each field, the Sign in button and the demo accounts. On the landing page, the hero headline, text and Sign in button fit above the fold. On every app screen, the page heading and its primary action are visible on load.
+- The sign-in page fits on one screen with no vertical scroll at all three target sizes. That includes the heading, both fields, an error message under each field, the Sign in button, the demo accounts and the demo notice. The landing page scrolls, with its header (logo and Sign in) fixed to the top; the hero headline, text and Sign in button fit above the fold. On every app screen, the page heading and its primary action are visible on load.
 - Never fake a smaller zoom. No CSS `zoom`, no `transform: scale()` on a page wrapper, and no `html { font-size }` below 100%. These break users who set larger text in their browser and fail WCAG (Web Content Accessibility Guidelines) 1.4.4 Resize Text and 1.4.10 Reflow.
 - Get the density from the design tokens instead:
   - Body text is 15–16px, and inputs are at least 16px on phones so iOS does not auto-zoom.

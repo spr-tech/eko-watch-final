@@ -6,6 +6,7 @@ import {
   loadStoredSession,
   saveStoredSession,
   sessionEnded,
+  sessionExpired,
   sessionSlice,
   sessionStarted,
 } from '@/app/sessionSlice'
@@ -23,13 +24,17 @@ sessionStorageSync.startListening({
   actionCreator: sessionEnded,
   effect: () => clearStoredSession(),
 })
+sessionStorageSync.startListening({
+  actionCreator: sessionExpired,
+  effect: () => clearStoredSession(),
+})
 
 // A fresh store; the app uses one, and each test can make its own.
 export function makeStore() {
   return configureStore({
     reducer: rootReducer,
     // A session saved in this tab survives a refresh until it expires.
-    preloadedState: { session: { session: loadStoredSession(new Date()) } },
+    preloadedState: { session: loadStoredSession(new Date()) },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().prepend(sessionStorageSync.middleware).concat(api.middleware),
   })

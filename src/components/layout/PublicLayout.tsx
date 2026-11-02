@@ -1,14 +1,12 @@
-// The frame for the signed-out pages (/ and /login): the page, then the demo notice.
+// The frame for the signed-out pages (/ and /login). Each page sets its own width, since
+// the landing and sign-in pages run edge to edge, and places the demo notice itself under
+// its right-hand content (docs/decisions.md, 2026-11-02).
 import { Outlet } from 'react-router'
-import { DemoBanner } from '@/components/layout/DemoBanner'
 
 export function PublicLayout() {
   return (
-    <div className="flex min-h-dvh flex-col">
-      <main className="mx-auto w-full max-w-295 flex-1 px-4 py-6 md:px-8">
-        <Outlet />
-      </main>
-      <DemoBanner />
-    </div>
+    <main className="flex min-h-dvh flex-col">
+      <Outlet />
+    </main>
   )
 }

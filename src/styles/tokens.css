@@ -68,12 +68,19 @@
   --color-warning-light: #fdf0d5; /* also the demo banner */
   --color-danger-light: #fdecec;
   --color-neutral-light: #eef1f5;
+  /* Text on --color-warning-light in the "can't reach the service" alert (SignIn) */
+  --color-warning-dark: #5c3800;
 
   /* Sidebar and phone top bar (the design's default "Lagoon" theme) */
   --color-sidebar: #0f5aa8;
   --color-on-sidebar: #ffffff;
   --color-wordmark-watch: #a8e0ff; /* "watch" in the wordmark */
   --color-focus-on-dark: #ffd24a; /* focus ring inside the sidebar and phone top bar */
+
+  /* Text on the navy and blue panels (landing rules panel, sign-in panel) */
+  --color-on-navy: #e6edf5;
+  --color-on-navy-muted: #b8c7d9;
+  --color-navy-divider: #2c4157;
 
   /* Green call to action ("Report a problem"); text on it is --color-text */
   --color-action: #50c47c;
