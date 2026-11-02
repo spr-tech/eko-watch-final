@@ -31,7 +31,7 @@ export function DemoAccounts({ onPick }: DemoAccountsProps) {
                     <button
                       type="button"
                       onClick={() => onPick(account)}
-                      className="min-h-9 w-full rounded-md border border-border-input bg-bg px-2 text-left text-sm font-bold text-primary hover:bg-primary-light short:min-h-8"
+                      className="min-h-9 w-full rounded-md border border-border-input bg-bg px-2 text-left text-sm font-bold whitespace-nowrap text-primary hover:bg-primary-light short:min-h-8"
                     >
                       {account.label}
                       <span className="sr-only">: fill in {account.email}</span>

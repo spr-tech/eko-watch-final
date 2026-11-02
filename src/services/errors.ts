@@ -31,7 +31,7 @@ export type ErrorMessage = { kind: ErrorKind; title: string; detail: string }
 
 const NETWORK: ErrorMessage = {
   kind: 'network',
-  title: "We can't reach EkoWatch right now.",
+  title: "Can't reach EkoWatch right now.",
   detail: 'Check your connection, then try again.',
 }
 

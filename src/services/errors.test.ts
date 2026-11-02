@@ -20,6 +20,10 @@ describe('describeError by status', () => {
   it('maps no connection and timeouts to a network message', () => {
     expect(describeError({ status: 'FETCH_ERROR' }).kind).toBe('network')
     expect(describeError({ status: 'TIMEOUT_ERROR' }).kind).toBe('network')
+    expect(describeError({ status: 'FETCH_ERROR' })).toMatchObject({
+      title: "Can't reach EkoWatch right now.",
+      detail: 'Check your connection, then try again.',
+    })
   })
 
   it('falls back to a server message for anything else', () => {
