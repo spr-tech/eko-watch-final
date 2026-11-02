@@ -194,7 +194,7 @@ export function ReportDetailView({ reportId, role, confirm }: ReportDetailViewPr
           className="on-dark flex min-w-0 flex-[1_1_300px] flex-col gap-3.5 rounded-[18px] bg-text px-5.5 py-5 text-white"
         >
           <span className="font-extrabold text-on-navy-muted">Confirmed by neighbours</span>
-          <p className="flex items-baseline gap-2.5">
+          <p aria-live="polite" className="flex items-baseline gap-2.5">
             <span className="text-[52px] leading-none font-extrabold tracking-[-1.5px]">{count}</span>
             <span className="text-base font-bold text-on-navy-muted">{confirmationWord(count)}</span>
           </p>
