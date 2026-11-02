@@ -52,8 +52,8 @@ const BY_STATUS: Record<number, ErrorMessage> = {
   415: { kind: 'photo-type', title: "That photo type isn't supported.", detail: 'Choose a JPEG or PNG photo, or send the report without one.' },
 }
 
-// TODO(contract): confirm codes with Esther. The deployed backend documents no error
-// responses yet, so these follow build plan section 9.
+// The stable codes listed in openapi.json (info.description) and build plan section 9.
+// 400, 401, 403 and 404 bodies were checked on the live backend on 2026-11-02.
 const BY_CODE: Record<string, ErrorMessage> = {
   VALIDATION_FAILED: BY_STATUS[400],
   UNAUTHENTICATED: BY_STATUS[401],
