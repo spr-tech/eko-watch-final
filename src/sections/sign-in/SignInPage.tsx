@@ -108,9 +108,9 @@ function SignInPhotos() {
           type="button"
           onClick={() => setPaused((p) => !p)}
           aria-label={paused ? 'Play photo slideshow' : 'Pause photo slideshow'}
-          className="absolute top-4 right-4 z-10 flex size-11 items-center justify-center rounded-full border-2 border-white/80 bg-[rgba(11,29,46,0.7)] text-white hover:bg-[rgba(11,29,46,0.9)] md:top-5 md:right-6"
+          className="absolute top-4 right-4 z-10 flex size-7 items-center justify-center rounded-full border border-white/50 bg-[rgba(11,29,46,0.45)] text-white backdrop-blur-sm hover:bg-[rgba(11,29,46,0.75)] md:top-5 md:right-6"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             {paused ? <path d="M8 5v14l11-7z" /> : <path d="M7 5h4v14H7zM13 5h4v14h-4z" />}
           </svg>
         </button>
@@ -127,7 +127,7 @@ export function SignInPage() {
   if (user) return <Navigate to={signInDestination(user.role, searchParams.get('next'))} replace />
   return (
     <div className="flex flex-1 flex-col md:flex-row">
-      <div className="on-dark relative h-37.5 shrink-0 overflow-hidden bg-text text-white md:h-auto md:min-h-130 md:flex-[1.1_1_0] short:md:min-h-0">
+      <div className="on-dark relative h-31.5 shrink-0 overflow-hidden bg-text text-white md:h-auto md:min-h-130 md:flex-[1.1_1_0] short:md:min-h-0">
         <SignInPhotos />
         <Link to={ROUTES.home} aria-label="EkoWatch home" className="absolute top-5 left-6 z-10 rounded-sm">
           <img src={logoOnDark} alt="" className="h-8 w-auto" />

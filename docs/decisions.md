@@ -110,12 +110,35 @@ _The sample report card part is reversed; see "Sample report card back in the la
 - **Agreed by:** Muizz Jamiu
 
 ### 2026-11-02 · Demo accounts and their password in the frontend bundle
-- **Change:** the sign-in page has a "Demo accounts" panel in three columns: Resident (Resident 1 = demo1, Resident 2 = demo2), Operator (Operator 1 = demo4, Operator 2 = demo8) and Ward office (demo5). Choosing one fills in the email and the shared password `DEMO@123` and moves focus to Sign in; it never signs in by itself. The accounts live only in `src/constants/demoAccounts.ts`.
+- **Change:** the sign-in page has a "Demo accounts" panel in three columns: Resident (Resident 1 = demo1, Resident 2 = demo2), Operator (Operator = demo4) and Ward office (demo5). Choosing one fills in the email and the shared password `DEMO@123` and moves focus to Sign in; it never signs in by itself. The accounts live only in `src/constants/demoAccounts.ts`.
 - **Why:** assessors and the demo audience can try every role without typing credentials. The layout follows FoodBridge's panel, inside the card under a divider as in `SignIn.dc.html`, with EkoWatch's tokens.
 - **Cost:** the demo emails and the shared password ship in the public JavaScript bundle. Acceptable only because the accounts are fictional demo accounts with no real data.
 - **Differs from:** CLAUDE.md's "one line per account showing role and email". The buttons show the account name; the email is in each button's accessible name and fills in the field when chosen.
-- **Left out:** demo3, demo6 and demo7 until their passwords work on the backend. demo8 has no assigned streets; that is noted here only, not on screen.
+- **Left out:** demo3, demo6 and demo7 until their passwords work on the backend. demo8 is left out on purpose (2026-11-02, sign-in polish): it is the operator with no assigned streets that Esther keeps for testing 403 `WARD_ASSIGNMENT_REQUIRED`, so in a demo its home page would only show an error.
 - **Reverse if:** any account ever holds real data, or the backend stops seeding the demo accounts.
+- **Agreed by:** Muizz Jamiu
+
+### 2026-11-02 · Sign-in gives up after 45 seconds
+- **Change:** a sign-in still unanswered after 45 s is cancelled: the button reads "Sign in" again, the alert says "Can't reach EkoWatch right now. Check your connection, then try again." and the email and password stay filled in. The "may be waking up" note still appears after 5 s. Other requests keep the 90 s limit in `api.ts`.
+- **Why:** 90 s felt like a hang on the sign-in page. A press of Sign in after a cancelled attempt usually lands, because the first request has woken the backend.
+- **How a late answer is kept out:** the form aborts the RTK Query mutation. Aborting cancels the fetch and rejects at once, and RTK Query never delivers an answer that arrives afterwards, so the session is only stored from an answer received in time. Leaving the page also aborts a sign-in in flight.
+- **Cost:** a backend that takes 45–60 s to wake needs a second press.
+- **Agreed by:** Muizz Jamiu
+
+### 2026-11-02 · Network error wording
+- **Change:** the shared network message (`src/services/errors.ts`) is "Can't reach EkoWatch right now." with "Check your connection, then try again." The sign-in alert now uses the same message.
+- **Differs from:** `SignIn.dc.html`, which says "We can't reach EkoWatch right now. Try again in a moment."
+- **Agreed by:** Muizz Jamiu
+
+### 2026-11-02 · Sign-in card tilt and a quieter slideshow button
+- **Change:** the sign-in card tilts up to 3° towards the mouse pointer and eases back flat when the pointer leaves. Only with a mouse (`hover: hover` and `pointer: fine`), never under reduced motion, and never while a field has focus; when flat it has no transform at all, so text stays sharp. The Pause/Play button is 28 × 28 px (WCAG 2.5.8 needs 24) with a 12px icon on 45% navy and a thin half-white outline, instead of 44 × 44 px with a 20px icon on 70% navy.
+- **Why:** a little life on the sign-in page; the old button competed with the photo.
+- **Differs from:** `SignIn.dc.html`, which has no tilt.
+- **Agreed by:** Muizz Jamiu
+
+### 2026-11-02 · Shorter photo strip on phones
+- **Change:** the sign-in photo strip on phones is 126px tall instead of 150px, and demo account buttons never wrap their label.
+- **Why:** with both field errors showing, the page scrolled by 24px at 390 × 760.
 - **Agreed by:** Muizz Jamiu
 
 ## Contract differences found in the deployed backend
@@ -147,7 +170,7 @@ Still open, or new:
 For the backend team (Adedayo). Password `DEMO@123` for all.
 - Sign in: demo1, demo2 (RESIDENT, with ward and street), demo4, demo8 (OPERATOR), demo5 (AUTHORITY).
 - **401 `UNAUTHENTICATED`: demo3, demo6 (RESIDENT) and demo7 (OPERATOR).** Left off the sign-in panel until they work.
-- **demo8 has no assigned streets**, so its "Today's streets" is empty.
+- **demo8 has no assigned streets**: deliberate, per Esther's notes, to test 403 `WARD_ASSIGNMENT_REQUIRED`. Not on the sign-in panel.
 - **demo5 has `wardId: null`** (see the ward decision above).
 
 ## Open questions (need a decision before the related slice)
