@@ -62,6 +62,34 @@ _None yet._
 - **Reverse if:** an assessor or facilitator says the label isn't visible enough.
 - **Proposed by:** Muizz · **Agreed by:** pending
 
+### 2026-11-02 · Demo notice placement on the public pages
+- **Change:** on `/` and `/login` the demo data notice is no longer a full-width footer strip. On `/login` it sits directly under the sign-in card; on `/` directly under the hero's right-hand panel, both in the right column (below the content on phones). Same wording, long on desktop and short on phones, as small text with `role="note"`. On the blue landing hero the text is `#E6EDF5` (5.8:1); elsewhere muted `#4A5A6B` (6.6:1). Signed-in pages keep the footer.
+- **Why:** the sign-in page must fit on one screen with no scroll (CLAUDE.md "Viewport and density"), and a strip across the bottom took a row of height from it. Next to the content, the label is visible on load on both pages, instead of at the very end of the long landing page.
+- **Cost:** the notice is in a different place on public and signed-in pages.
+- **Reverse if:** an assessor or facilitator says the label isn't visible enough on the public pages.
+- **Proposed by:** Muizz · **Agreed by:** pending
+
+### 2026-11-02 · Landing page header fixed to the top
+- **Change:** the landing page keeps all its sections and scrolls, but its header (logo and Sign in) stays fixed to the top of the screen while scrolling. The design's header scrolls away with the hero.
+- **Why:** a visitor reading further down can still sign in or go home without scrolling back up.
+- **Cost:** the header takes about 64px of height on every scroll position, which matters most on phones.
+- **Reverse if:** testing on phones shows the fixed header crowds the content.
+- **Proposed by:** Muizz · **Agreed by:** pending
+
+### 2026-11-02 · "Your session has ended" instead of a silent redirect
+- **Change:** when a session runs out (its `expiresAt` passes, checked on start-up and once a minute) or, from slice 1, the service answers 401, the frontend clears the session and shows "Your session has ended" with "Sign in again", which returns the user to the page they were on. A user who was never signed in goes straight to `/login`. Signing out on purpose goes to `/login` without the message. The design draws this as a dialog over the page; here it fills the page, because the session is already gone.
+- **Why:** CLAUDE.md "Session" (expiry and 401 mean signing in again), and the design's session-ended state. Saying why the user is back at sign-in is clearer than an unexplained redirect.
+- **Cost:** the page they were reading isn't shown behind the message.
+- **Reverse if:** testing shows users would rather keep reading the page behind a dialog.
+- **Proposed by:** Claude Code on Muizz's overnight instructions · **Agreed by:** pending
+
+### 2026-11-02 · Landing page leaves out the sample activity
+- **Change:** the landing page leaves out the design's "Sample activity (fictional)" ticker and the animated sample report card in the hero. The photo slot is a plain dark panel with the EkoWatch icon.
+- **Why:** both are hard-coded made-up records, and CLAUDE.md allows no sample arrays or placeholder records in `src/`. The photos have no licence or credit yet (docs/design/README.md correction 5).
+- **Cost:** the hero shows less of what the app does.
+- **Reverse if:** the team agrees that clearly labelled illustrative copy on the landing page isn't "mock data", or the ticker can read real recent activity from a public endpoint.
+- **Proposed by:** Claude Code on Muizz's overnight instructions · **Agreed by:** pending
+
 ## Contract differences found in the deployed backend (2026-11-01)
 
 Compared https://ekowatch-backend.onrender.com/v3/api-docs with the build plan. Needs Esther's answer; the frontend follows the deployed backend until then.

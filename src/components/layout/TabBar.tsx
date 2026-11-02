@@ -2,13 +2,13 @@
 // green; the current tab is dark.
 import { Link, useLocation } from 'react-router'
 import { NavIcon } from '@/components/layout/NavIcons'
-import { isNavActive, NAV, type NavItem } from '@/components/layout/navItems'
+import { isNavActive, ROLE_NAV, type NavItem } from '@/constants/roles'
 import type { Role } from '@/types/ekowatch'
 
 const base = 'flex flex-1 basis-0 flex-col items-center gap-0.5 rounded-xl py-1.75 text-[13px]'
 
 export function TabBar({ role }: { role: Role }) {
-  const { action, items } = NAV[role]
+  const { action, items } = ROLE_NAV[role]
   const { pathname } = useLocation()
   // The resident's Report tab sits third, after Reports and Hazards.
   const tabs: (NavItem & { isAction?: boolean })[] = action

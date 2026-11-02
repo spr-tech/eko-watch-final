@@ -7,7 +7,9 @@ import { ROLES, type SessionView } from '@/types/ekowatch'
 
 export const SESSION_STORAGE_KEY = 'ekowatch.session'
 
-type SessionState = { session: SessionView | null }
+// ended: the last session ran out or was refused, as opposed to never signed in or
+// signed out on purpose.
+export type SessionState = { session: SessionView | null; ended: boolean }
 
 // True once expiresAt (an ISO 8601 instant from the server) has passed. A value that
 // can't be read counts as expired.
@@ -47,25 +49,34 @@ export function saveStoredSession(session: SessionView) {
 }
 
 // The stored session, or null when there is none, it can't be read, or it has expired.
-export function loadStoredSession(now: Date): SessionView | null {
+// The session saved in this tab, read on start-up. A session that has expired since is
+// cleared and reported as ended, so the app can say "Your session has ended" instead of
+// silently showing sign-in.
+export function loadStoredSession(now: Date): SessionState {
+  const signedOut: SessionState = { session: null, ended: false }
   let raw: string | null
   try {
     raw = sessionStorage.getItem(SESSION_STORAGE_KEY)
   } catch {
-    return null
+    return signedOut
   }
-  if (!raw) return null
+  if (!raw) return signedOut
+  let value: unknown = null
   try {
-    const value: unknown = JSON.parse(raw)
-    if (isStoredSession(value) && !isSessionExpired(value.expiresAt, now)) return value
+    value = JSON.parse(raw)
   } catch {
     // Unreadable: treat as signed out.
   }
+  if (isStoredSession(value)) {
+    if (!isSessionExpired(value.expiresAt, now)) return { session: value, ended: false }
+    clearStoredSession()
+    return { session: null, ended: true }
+  }
   clearStoredSession()
-  return null
+  return signedOut
 }
 
-const initialState: SessionState = { session: null }
+const initialState: SessionState = { session: null, ended: false }
 
 export const sessionSlice = createSlice({
   name: 'session',
@@ -73,17 +84,28 @@ export const sessionSlice = createSlice({
   reducers: {
     sessionStarted(state, action: PayloadAction<SessionView>) {
       state.session = action.payload
+      state.ended = false
     },
+    // The user signed out on purpose.
     sessionEnded(state) {
       state.session = null
+      state.ended = false
+    },
+    // The session ran out (expiresAt passed) or the service refused it (401): the user
+    // is told and asked to sign in again.
+    sessionExpired(state) {
+      state.session = null
+      state.ended = true
     },
   },
   selectors: {
     selectSession: (state) => state.session,
+    selectSessionEnded: (state) => state.ended,
     selectAccessToken: (state) => state.session?.accessToken ?? null,
     selectCurrentUser: (state) => state.session?.user ?? null,
   },
 })
 
-export const { sessionStarted, sessionEnded } = sessionSlice.actions
-export const { selectSession, selectAccessToken, selectCurrentUser } = sessionSlice.selectors
+export const { sessionStarted, sessionEnded, sessionExpired } = sessionSlice.actions
+export const { selectSession, selectSessionEnded, selectAccessToken, selectCurrentUser } =
+  sessionSlice.selectors

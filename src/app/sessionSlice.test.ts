@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { isSessionExpired, loadStoredSession, SESSION_STORAGE_KEY } from '@/app/sessionSlice'
+import {
+  isSessionExpired,
+  loadStoredSession,
+  SESSION_STORAGE_KEY,
+  sessionEnded,
+  sessionExpired,
+  sessionSlice,
+} from '@/app/sessionSlice'
 
 const now = new Date('2026-11-01T12:00:00Z')
 
@@ -19,13 +26,26 @@ describe('isSessionExpired', () => {
 })
 
 describe('loadStoredSession', () => {
-  it('is null when nothing is stored', () => {
-    expect(loadStoredSession(now)).toBeNull()
+  it('is signed out, not ended, when nothing is stored', () => {
+    expect(loadStoredSession(now)).toEqual({ session: null, ended: false })
   })
 
-  it('is null for unreadable JSON, and clears it', () => {
+  it('is signed out for unreadable JSON, and clears it', () => {
     sessionStorage.setItem(SESSION_STORAGE_KEY, '{not json')
-    expect(loadStoredSession(now)).toBeNull()
+    expect(loadStoredSession(now)).toEqual({ session: null, ended: false })
     expect(sessionStorage.getItem(SESSION_STORAGE_KEY)).toBeNull()
+  })
+})
+
+describe('session reducer', () => {
+  const reducer = sessionSlice.reducer
+  const signedOut = { session: null, ended: false }
+
+  it('marks the session as ended when it expires or is refused', () => {
+    expect(reducer(signedOut, sessionExpired())).toEqual({ session: null, ended: true })
+  })
+
+  it('does not mark it ended when the user signs out on purpose', () => {
+    expect(reducer({ session: null, ended: true }, sessionEnded())).toEqual(signedOut)
   })
 })

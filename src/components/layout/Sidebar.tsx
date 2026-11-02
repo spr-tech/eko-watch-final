@@ -3,12 +3,12 @@
 import { Link, useLocation } from 'react-router'
 import logoOnDark from '@/assets/ekowatch-logo-horizontal-on-dark.svg'
 import { NavIcon } from '@/components/layout/NavIcons'
-import { isNavActive, NAV } from '@/components/layout/navItems'
+import { isNavActive, ROLE_NAV } from '@/constants/roles'
 import { ROUTES } from '@/constants/routes'
 import type { Role } from '@/types/ekowatch'
 
 export function Sidebar({ role }: { role: Role }) {
-  const { action, items } = NAV[role]
+  const { action, items } = ROLE_NAV[role]
   const { pathname } = useLocation()
   return (
     <aside className="on-dark hidden w-58 flex-none flex-col gap-4.5 bg-sidebar px-3.5 py-4.5 text-on-sidebar md:flex">
