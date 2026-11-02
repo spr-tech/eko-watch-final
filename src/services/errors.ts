@@ -5,14 +5,16 @@ import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import type { SerializedError } from '@reduxjs/toolkit'
 
 // HTTP status, or how the request failed without one: no connection or no response
-// (FETCH_ERROR), took too long (TIMEOUT_ERROR), or the reply couldn't be read (PARSING_ERROR).
-export type ErrorStatus = number | 'FETCH_ERROR' | 'TIMEOUT_ERROR' | 'PARSING_ERROR' | 'UNKNOWN'
+// (FETCH_ERROR), took too long (TIMEOUT_ERROR), the reply couldn't be read (PARSING_ERROR),
+// or it held a value this app doesn't know, such as a new enum value (UNEXPECTED_REPLY).
+export type ErrorStatus = number | 'FETCH_ERROR' | 'TIMEOUT_ERROR' | 'PARSING_ERROR' | 'UNEXPECTED_REPLY' | 'UNKNOWN'
 
 export type ErrorInput = {
   status: ErrorStatus
   code?: string | null
   // createReport: a lost response means the report may have been saved.
-  operation?: 'createReport'
+  // recordCollection: WARD_ASSIGNMENT_REQUIRED means the street isn't the operator's.
+  operation?: 'createReport' | 'recordCollection'
 }
 
 export type ErrorKind =
@@ -26,6 +28,7 @@ export type ErrorKind =
   | 'server'
   | 'network'
   | 'outcome-unknown'
+  | 'unexpected'
 
 export type ErrorMessage = { kind: ErrorKind; title: string; detail: string }
 
@@ -33,6 +36,18 @@ const NETWORK: ErrorMessage = {
   kind: 'network',
   title: "Can't reach EkoWatch right now.",
   detail: 'Check your connection, then try again.',
+}
+
+const UNEXPECTED: ErrorMessage = {
+  kind: 'unexpected',
+  title: "EkoWatch sent a reply this app doesn't recognise.",
+  detail: 'Try again later. If it keeps happening, tell the EkoWatch team.',
+}
+
+const NOT_ASSIGNED: ErrorMessage = {
+  kind: 'forbidden',
+  title: "This street isn't assigned to you.",
+  detail: 'Only the operator assigned to a street can mark it done. Check with the ward office.',
 }
 
 const OUTCOME_UNKNOWN: ErrorMessage = {
@@ -92,6 +107,8 @@ export function describeError({ status, code, operation }: ErrorInput): ErrorMes
   // No response at all: for a report, it may have been saved, so never say "failed".
   const noResponse = status === 'FETCH_ERROR' || status === 'TIMEOUT_ERROR'
   if (noResponse) return operation === 'createReport' ? OUTCOME_UNKNOWN : NETWORK
+  if (status === 'UNEXPECTED_REPLY') return UNEXPECTED
+  if (code === 'WARD_ASSIGNMENT_REQUIRED' && operation === 'recordCollection') return NOT_ASSIGNED
   if (code && BY_CODE[code]) return BY_CODE[code]
   if (typeof status === 'number') {
     if (BY_STATUS[status]) return BY_STATUS[status]
@@ -124,6 +141,7 @@ function readProblem(data: unknown): { code: string | null; fieldErrors: FieldEr
 export function toErrorInput(
   error: FetchBaseQueryError | SerializedError | undefined,
 ): ErrorInput & { fieldErrors: FieldErrors } {
+  if (error && 'name' in error && error.name === 'UnexpectedReplyError') return { status: 'UNEXPECTED_REPLY', fieldErrors: {} }
   if (!error || !('status' in error)) return { status: 'UNKNOWN', fieldErrors: {} }
   if (error.status === 'CUSTOM_ERROR') return { status: 'UNKNOWN', fieldErrors: {} }
   const { code, fieldErrors } = readProblem('data' in error ? error.data : undefined)

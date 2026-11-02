@@ -96,3 +96,29 @@ export function CheckIcon({ size = 20 }: { size?: number }) {
     </Icon>
   )
 }
+
+export function ChevronLeftIcon({ size = 18 }: { size?: number }) {
+  return (
+    <Icon size={size} strokeWidth={2.6}>
+      <path d="m15 18-6-6 6-6" />
+    </Icon>
+  )
+}
+
+export function PhotoIcon({ size = 30 }: { size?: number }) {
+  return (
+    <Icon size={size} strokeWidth={1.8}>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <circle cx="9" cy="10" r="2" />
+      <path d="m21 16-5-5L5 20" />
+    </Icon>
+  )
+}
+
+export function PlusIcon({ size = 20 }: { size?: number }) {
+  return (
+    <Icon size={size} strokeWidth={2.4}>
+      <path d="M12 5v14M5 12h14" />
+    </Icon>
+  )
+}

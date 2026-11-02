@@ -141,6 +141,52 @@ _The sample report card part is reversed; see "Sample report card back in the la
 - **Why:** with both field errors showing, the page scrolled by 24px at 390 × 760.
 - **Agreed by:** Muizz Jamiu
 
+## Overnight run, 2026-11-02 to 11-03 (core loop steps 2 to 6)
+
+Every entry here was proposed by Claude Code overnight, without a chance to ask. Each one is "Agreed by: pending" until reviewed.
+
+### 2026-11-02 · `feat/core-loop-pages` starts from the sign-in work, not bare `main`
+- **Change:** the branch was created from `main`, then moved (before any commit) to the tip of `feat/sign-in-polish`, because `main` has no sign-in, no `openapi.json` and no view types, so nothing could be tested on the live backend. `git merge` is on the deny list, so nothing was merged; the branch simply starts later in the same history.
+- **Cost:** until `feat/core-loop` and `feat/sign-in-polish` are merged, the pull request for this branch also shows their commits.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Reports filters: "Waste" split into two chips
+- **Change:** the chips are All, Flooding, Drains, Missed pickups and Dumping. The design's "Waste" chip covers two report types, but `GET /reports` takes one `reportType`. "Current floods only" selects Flooding and sends `reportType=FLOODED_ROAD&floodStatus=CURRENT`. Filters and page live in the address.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Reports header without "Newest report: 12 min ago"
+- **Change:** left out. `GET /reports` sorted by confirmations gives no server timestamp for the newest report; showing one would need a second request or a time made in the browser.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Confirm only on report detail, and paging under the list
+- **Change:** the list shows the count and "You confirmed this", but the Confirm button is on the report's page only (the design also has one on each row). Lists over 20 reports get Previous / Page x of y / Next; the design has no paging.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Wording added for states the design doesn't draw
+- **Change:** ward office and operators with an empty list: "No reports in your ward yet. Reports from residents will show here as they come in." (no Report a problem button). Current floods only with no results: "No current flood reports. That does not mean the roads are clear, only that no one has reported flooding recently." Report page: a current flood says "Expires in 3 h unless someone confirms it again"; an expired one says "No recent confirmations. This doesn't mean the road is clear."; a missed pickup says "Collection day missed: Friday 30 October". Operators: "Operators see confirmations but do not confirm reports." A reply with an enum value the app doesn't know: "EkoWatch sent a reply this app doesn't recognise." A ward office that can see several wards gets a "Choose a ward" list (`?ward=` in the address).
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Today's streets details
+- **Change:** the page asks `GET /operators/me/streets?fromDate=today&toDate=today` and `GET /collection-schedules` for the operator's ward and today (size 100), and shows assigned streets that have a schedule today. A street that was marked earlier shows "Marked done at 09:58" (Lagos time). A disputed one says "Marked done at 09:58, but residents reported the pickup as missed." with a link to the missed-pickup reports. If the PUT answers 200 (already recorded), the row says "Already marked done today at 09:58. Refreshed." If the reply is lost, the page says it can't tell yet, re-reads the list, and says marking twice is safe.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Report a problem details
+- **Change:** the form follows `ReportNew.dc.html` without "Use my location": the street is enough on its own, and asking for the browser's position adds a permission prompt and precise coordinates for no gain in the MVP. A resident with no ward gets "Choose your street first" with a link to `/setup` instead of the form. The collection-day list shows the street's scheduled days in the last 30 days up to today (Lagos), newest first. On success the user lands on the new report with a "Report sent" toast. If the photo upload fails, the message adds "You can also remove the photo and send the report without it."
+- **Idempotency:** the key belongs to the request body. A retry of the same body (and the same photoId) reuses it; any change to the report makes a new one, so the service never sees a reused key with different details.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Confirm details
+- **Change:** residents see "Confirm it's still there" until they have confirmed, then "You confirmed this". On an expired flood they confirmed before, the button reads "Confirm it again" (it refreshes the evidence; the count doesn't go up). Because `ReportView` has no `reportedByMe`, a resident also sees the button on their own report; pressing it gets the 409 and "You can't confirm your own report. Your neighbours can confirm it if they see it too." 400, 403, 404 and 409 undo the change; a lost reply or a 5xx keeps it and says "We can't tell yet if your confirmation was saved." with Check again, which reads the report from the service.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Ward dashboard details
+- **Change:** the range is the last 30 days up to today in Lagos (`fromDate` = today − 29). The two side lists ("Most-confirmed blocked-drain reports", top 3; "Current flood reports", up to 5) come from `GET /reports`, since the dashboard response has counts only. "Computed today at 23:55" comes from `generatedAt`. The disputed card uses a warning icon. The empty state follows design correction 3; an empty flood list says "No current flood reports. That doesn't mean the roads are clear, only that no one has reported flooding recently."
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Step 5 built before steps 3 and 4
+- **Change:** the operator's Today's streets (step 5) was built straight after step 2. The one allowed operator write is "today's Fictional Bamboo Street", and Bamboo Street is only scheduled on 2 November; after midnight in Lagos "today" would no longer include it. Commits stay one per step.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
 ## Contract differences found in the deployed backend
 
 ### Checked again 2026-11-02 (openapi.json saved to the repo, plus live `curl`)
@@ -164,6 +210,17 @@ Still open, or new:
 - **`X-Request-ID`** is not documented. Each error body carries a `requestId`.
 - **`CurrentUserView` includes `email`** and **`PhotoView` includes `contentType` and `sizeBytes`.** Extra fields, harmless; add them to the plan.
 - **No `reportedByMe` on `ReportView`.** "You reported this" stays out of the interface.
+
+### Overnight contract checks (live `/v3/api-docs` against `openapi.json`)
+
+- 2026-11-02 17:40 UTC, before step 2: identical.
+- Found while wiring step 2 and 5 (live `curl`): `GET /operators/me/streets` for demo8, the operator with no streets, answers `200 []`, not 403 `WARD_ASSIGNMENT_REQUIRED`. `GET /collection-schedules` returns a `Page` (`items`, `page`, `size`, `totalElements`, `totalPages`), like `GET /reports`.
+
+- 2026-11-02 22:12 UTC, before step 3: identical.
+- 2026-11-02 22:38 UTC, before step 4: identical.
+- 2026-11-02 22:49 UTC, before step 6: identical.
+- 2026-11-02 23:03 UTC, end of the run: identical.
+- **`POST /photos` answers 500 `INTERNAL_ERROR`** (2026-11-02, about 22:40 UTC) for a valid 272 KB JPEG, from the app and from plain `curl -F file=@photo.jpg;type=image/jpeg` alike. Request IDs `ba38cbf5-886a-44ca-aca7-8fe93dc1f51b`, `bb49584f-4098-4979-84a4-b3b82d2971c8` and, retried at 23:00 UTC, `23a596e5-ac82-4f7b-b20b-24fa70a64be9`, for Esther and Adedayo. Reports without a photo work.
 
 ### Demo accounts on the live backend (2026-11-02)
 

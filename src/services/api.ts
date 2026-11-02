@@ -1,7 +1,14 @@
 // The one RTK Query API for the app. Each domain file (authApi.ts, reportApi.ts and so
 // on) adds its endpoints with api.injectEndpoints, keyed by the OpenAPI operationId.
 // Never create a second createApi.
-import { createApi, fetchBaseQuery, type BaseQueryFn, type FetchArgs, type FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import {
+  createApi,
+  fetchBaseQuery,
+  type BaseQueryFn,
+  type FetchArgs,
+  type FetchBaseQueryError,
+  type FetchBaseQueryMeta,
+} from '@reduxjs/toolkit/query/react'
 import { sessionExpired } from '@/app/sessionSlice'
 import { env } from '@/config/env'
 import type { SessionView } from '@/types/ekowatch'
@@ -30,7 +37,9 @@ const rawBaseQuery = fetchBaseQuery({
 // A 401 on a signed-in request means the service no longer accepts the token: end the
 // session so RequireSession says "Your session has ended". A 401 from createSession is
 // just wrong details, handled by the sign-in form.
-const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, apiContext, extra) => {
+// The response metadata (status and headers) is passed on, so an endpoint can tell a
+// 200 from a 201.
+const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, object, FetchBaseQueryMeta> = async (args, apiContext, extra) => {
   const result = await rawBaseQuery(args, apiContext, extra)
   const signedIn = (apiContext.getState() as StateWithSession).session.session !== null
   if (result.error?.status === 401 && apiContext.endpoint !== 'createSession' && signedIn) {

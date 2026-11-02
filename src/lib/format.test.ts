@@ -1,7 +1,16 @@
 // The test run uses TZ=America/New_York (vite.config.ts), so any formatting that uses
 // the machine's timezone instead of Lagos gives the wrong day here and fails.
 import { describe, expect, it } from 'vitest'
-import { formatAge, formatCollectionDate, formatFloodCountdown, lagosDate } from '@/lib/format'
+import {
+  formatAge,
+  formatCollectionDate,
+  formatEvidenceAge,
+  formatFloodCountdown,
+  formatLagosTime,
+  formatWhen,
+  lagosDate,
+  shiftDate,
+} from '@/lib/format'
 
 describe('lagosDate', () => {
   it('uses the Lagos calendar day, not the machine timezone', () => {
@@ -68,5 +77,38 @@ describe('formatFloodCountdown', () => {
   it('says "Expired" at and after expiresAt', () => {
     expect(formatFloodCountdown('2026-10-28T14:00:00Z', now)).toBe('Expired')
     expect(formatFloodCountdown('2026-10-28T09:00:00Z', now)).toBe('Expired')
+  })
+})
+
+describe('formatWhen', () => {
+  const now = new Date('2026-10-31T12:00:00Z')
+
+  it('reads well inside a sentence', () => {
+    expect(formatWhen('2026-10-31T09:00:00Z', now)).toBe('3 h ago')
+    expect(formatWhen('2026-10-30T09:00:00Z', now)).toBe('yesterday')
+    expect(formatWhen('2026-10-28T09:00:00Z', now)).toBe('on 28 October')
+  })
+
+  it('is what the evidence age uses', () => {
+    expect(formatEvidenceAge('2026-10-28T09:00:00Z', now)).toBe('Community report · last confirmed on 28 October')
+  })
+})
+
+describe('formatLagosTime', () => {
+  it('gives the time of day in Lagos (UTC+1), not the device timezone', () => {
+    expect(formatLagosTime('2026-11-02T08:58:00Z')).toBe('09:58')
+    expect(formatLagosTime('2026-11-02T23:30:00Z')).toBe('00:30')
+  })
+})
+
+describe('shiftDate', () => {
+  it('moves across months and years', () => {
+    expect(shiftDate('2026-11-02', -30)).toBe('2026-10-03')
+    expect(shiftDate('2026-12-31', 1)).toBe('2027-01-01')
+    expect(shiftDate('2026-11-02', 0)).toBe('2026-11-02')
+  })
+
+  it('rejects anything that is not a calendar date', () => {
+    expect(() => shiftDate('2 November', 1)).toThrow()
   })
 })
