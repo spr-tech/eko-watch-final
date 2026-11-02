@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { canOpen, homePathFor, isNavActive, ROLE_NAV, ROUTE_ROLES } from '@/constants/roles'
+import { canOpen, homePathFor, isNavActive, ROLE_NAV, ROUTE_ROLES, signInDestination } from '@/constants/roles'
 import { ROUTES } from '@/constants/routes'
 import { ROLES } from '@/types/ekowatch'
 
@@ -74,5 +74,29 @@ describe('isNavActive', () => {
     expect(isNavActive('/reports/new', ROUTES.reports)).toBe(false)
     expect(isNavActive('/reports/new', ROUTES.newReport)).toBe(true)
     expect(isNavActive('/hazards', ROUTES.reports)).toBe(false)
+  })
+})
+
+describe('signInDestination', () => {
+  it("goes to the role's home without a next page", () => {
+    expect(signInDestination('RESIDENT', null)).toBe(ROUTES.reports)
+    expect(signInDestination('OPERATOR', '')).toBe(ROUTES.operatorCollections)
+    expect(signInDestination('AUTHORITY', null)).toBe(ROUTES.authorityDashboard)
+  })
+
+  it('returns to the next page when the role may open it, keeping its query', () => {
+    expect(signInDestination('RESIDENT', '/reports/new')).toBe('/reports/new')
+    expect(signInDestination('OPERATOR', '/reports/abc?x=1')).toBe('/reports/abc?x=1')
+  })
+
+  it("ignores a next page the role can't open", () => {
+    expect(signInDestination('OPERATOR', ROUTES.authorityDashboard)).toBe(ROUTES.operatorCollections)
+    expect(signInDestination('AUTHORITY', ROUTES.newReport)).toBe(ROUTES.authorityDashboard)
+  })
+
+  it('ignores addresses outside the app and unknown pages', () => {
+    for (const next of ['https://evil.example/reports', '//evil.example/reports', '/\\evil.example', 'reports', '/login', '/nope']) {
+      expect(signInDestination('RESIDENT', next)).toBe(ROUTES.reports)
+    }
   })
 })

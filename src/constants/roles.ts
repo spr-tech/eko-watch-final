@@ -64,6 +64,15 @@ export function homePathFor(role: Role): string {
   return ROLE_NAV[role].home.to
 }
 
+// Where to go after signing in: the ?next= page if it is a page in this app the role may
+// open, otherwise the role's home. Anything else in next (another site, "//host", an
+// unknown or forbidden page) is ignored.
+export function signInDestination(role: Role, next: string | null): string {
+  if (!next || !next.startsWith('/') || next.startsWith('//') || next.startsWith('/\\')) return homePathFor(role)
+  const pathname = next.split(/[?#]/, 1)[0]
+  return canOpen(role, pathname) ? next : homePathFor(role)
+}
+
 // A menu item is current on its own page and the pages under it (Reports on
 // /reports/:reportId), except "Report a problem" (/reports/new), which marks nothing.
 export function isNavActive(pathname: string, to: string): boolean {

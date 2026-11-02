@@ -1,0 +1,4026 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EkoWatch API",
+    "description": "Neighborhood Waste & Flood Alert System (Lagos) — Canonical REST API v1.\n\n### Authentication\n- **Public endpoints**: `POST /api/v1/auth/sessions` and `POST /api/v1/auth/login`\n- **Protected endpoints**: All other `/api/v1/**` endpoints require `Authorization: Bearer <accessToken>`\n\n### Error Format (`application/problem+json`)\nEvery error response (`400`, `401`, `403`, `404`, `409`, `413`, `415`, `500`) returns `Content-Type: application/problem+json` with a stable `code` field (`VALIDATION_FAILED`, `IDEMPOTENCY_KEY_REQUIRED`, `UNAUTHENTICATED`, `FORBIDDEN`, `WARD_ASSIGNMENT_REQUIRED`, `RESOURCE_NOT_FOUND`, `SELF_CONFIRMATION_NOT_ALLOWED`, `IDEMPOTENCY_KEY_REUSED`, `PHOTO_TOO_LARGE`, `UNSUPPORTED_PHOTO_TYPE`, `INTERNAL_ERROR`).\n",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://ekowatch-backend.onrender.com",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Photos",
+      "description": "Resident photo upload with EXIF/GPS/XMP sanitisation and Cloudinary storage"
+    },
+    {
+      "name": "Reports & Hazards",
+      "description": "Resident waste and flood reporting, feed listing, and ward hazard layers"
+    },
+    {
+      "name": "Confirmations",
+      "description": "Community confirmation ('same here') for resident reports"
+    },
+    {
+      "name": "Users",
+      "description": "Authenticated user profile and resident ward/street preferences"
+    },
+    {
+      "name": "Authority Dashboard",
+      "description": "Local-authority ward analytics and operator performance"
+    },
+    {
+      "name": "Operators",
+      "description": "Waste operator assigned streets"
+    },
+    {
+      "name": "Collections",
+      "description": "Collection schedule lookups and idempotent operator pickup recording"
+    },
+    {
+      "name": "Wards & Streets",
+      "description": "Ward and street directory lookup"
+    },
+    {
+      "name": "Authentication",
+      "description": "Login and Bearer session token creation"
+    }
+  ],
+  "paths": {
+    "/api/v1/users/me/preferences": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Set or update the authenticated resident's ward and street preference",
+        "description": "Requires Role: `RESIDENT` (`Authorization: Bearer <token>`). Validates that `streetId` belongs to `wardId`.",
+        "operationId": "updateMyPreferences",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePreferencesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/users/me/preferences"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/users/me/preferences",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/users/me/preferences",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/users/me/preferences",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/users/me/preferences",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/users/me/preferences",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/streets/{streetId}/collections/{collectionDate}": {
+      "put": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Record waste collection completion idempotently (201 first time, 200 if already done)",
+        "description": "Requires Role: `OPERATOR` assigned to the street's ward and scheduled for `(streetId, collectionDate)`.\n- **Returns `201 Created`** the first time the street is marked done for `collectionDate`.\n- **Returns `200 OK`** when the street is already marked done for `collectionDate` (existing `CollectionView` is returned without overwriting `completedAt`).\n- Returns `403 WARD_ASSIGNMENT_REQUIRED` if the operator is not assigned to the street's ward, or `403 FORBIDDEN` if not scheduled for that street/date.\n",
+        "operationId": "recordCollection",
+        "parameters": [
+          {
+            "name": "streetId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "collectionDate",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Street was already marked done for this date (existing record returned without overwriting completedAt)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionView"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "First time collection recorded for this street and date",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/streets/{streetId}/collections/{collectionDate}"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/streets/{streetId}/collections/{collectionDate}",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/streets/{streetId}/collections/{collectionDate}",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/streets/{streetId}/collections/{collectionDate}",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/streets/{streetId}/collections/{collectionDate}",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/streets/{streetId}/collections/{collectionDate}",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/reports/{reportId}/confirmations/me": {
+      "put": {
+        "tags": [
+          "Confirmations"
+        ],
+        "summary": "Confirm an existing report idempotently ('same here')",
+        "description": "Requires Role: `RESIDENT`. Returns `200 OK` with the updated `ReportView`. Returns `409 SELF_CONFIRMATION_NOT_ALLOWED` if the resident is the original reporter.",
+        "operationId": "confirmReport",
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/reports/{reportId}/confirmations/me"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/reports/{reportId}/confirmations/me",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/reports/{reportId}/confirmations/me",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/reports/{reportId}/confirmations/me",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/reports/{reportId}/confirmations/me",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/reports/{reportId}/confirmations/me",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — SELF_CONFIRMATION_NOT_ALLOWED or IDEMPOTENCY_KEY_REUSED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "IDEMPOTENCY_KEY_REUSED": {
+                    "value": {
+                      "title": "Idempotency key reused",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-reused",
+                      "status": 409,
+                      "code": "IDEMPOTENCY_KEY_REUSED",
+                      "instance": "/api/v1/reports/{reportId}/confirmations/me",
+                      "detail": "Idempotency-Key was already used with a different request payload."
+                    }
+                  },
+                  "SELF_CONFIRMATION_NOT_ALLOWED": {
+                    "value": {
+                      "title": "Self confirmation not allowed",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:self-confirmation-not-allowed",
+                      "status": 409,
+                      "code": "SELF_CONFIRMATION_NOT_ALLOWED",
+                      "instance": "/api/v1/reports/{reportId}/confirmations/me",
+                      "detail": "You cannot confirm your own report."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/reports": {
+      "get": {
+        "tags": [
+          "Reports & Hazards"
+        ],
+        "summary": "List reports in a ward with filtering, sorting, and pagination",
+        "description": "Requires `Authorization: Bearer <token>`. Filters by required `wardId` and optional `streetId`, `reportType`, `floodStatus`. Sorted by `CONFIRMATIONS` (default) or `RECENT`.",
+        "operationId": "listReports",
+        "parameters": [
+          {
+            "name": "wardId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "streetId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "reportType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "MISSED_PICKUP",
+                "ILLEGAL_DUMPING",
+                "BLOCKED_DRAIN",
+                "FLOODED_ROAD"
+              ]
+            }
+          },
+          {
+            "name": "floodStatus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CURRENT",
+                "EXPIRED"
+              ]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "CONFIRMATIONS",
+              "enum": [
+                "CONFIRMATIONS",
+                "NEWEST"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageReportView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/reports"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/reports",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/reports",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/reports",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/reports",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/reports",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — SELF_CONFIRMATION_NOT_ALLOWED or IDEMPOTENCY_KEY_REUSED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "IDEMPOTENCY_KEY_REUSED": {
+                    "value": {
+                      "title": "Idempotency key reused",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-reused",
+                      "status": 409,
+                      "code": "IDEMPOTENCY_KEY_REUSED",
+                      "instance": "/api/v1/reports",
+                      "detail": "Idempotency-Key was already used with a different request payload."
+                    }
+                  },
+                  "SELF_CONFIRMATION_NOT_ALLOWED": {
+                    "value": {
+                      "title": "Self confirmation not allowed",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:self-confirmation-not-allowed",
+                      "status": 409,
+                      "code": "SELF_CONFIRMATION_NOT_ALLOWED",
+                      "instance": "/api/v1/reports",
+                      "detail": "You cannot confirm your own report."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Reports & Hazards"
+        ],
+        "summary": "Create a resident waste or flood report idempotently (returns 201 Created)",
+        "description": "Requires Role: `RESIDENT` and a required `Idempotency-Key` UUID request header.\n- **Always returns `201 Created`** (with `Location: /api/v1/reports/{reportId}`).\n- **Idempotency**: If the client sends the **same `Idempotency-Key` and same request body** within 24 hours, the server returns the **exact same `ReportView` (`201 Created`)** without creating a duplicate report.\n- If `Idempotency-Key` is missing, returns `400 Bad Request` (`code: \"IDEMPOTENCY_KEY_REQUIRED\"`).\n- If the same `Idempotency-Key` is reused with a different request body, returns `409 Conflict` (`code: \"IDEMPOTENCY_KEY_REUSED\"`).\n",
+        "operationId": "createReport",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Required client-generated UUID. Sending the same key and same payload twice returns the same ReportView instead of creating a duplicate.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "90000000-0000-0000-0000-000000000001"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Report created (or original ReportView replayed on idempotent retry)",
+            "headers": {
+              "Location": {
+                "description": "URI of the created report (/api/v1/reports/{reportId})",
+                "style": "simple",
+                "schema": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/reports"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/reports",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/reports",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/reports",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/reports",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/reports",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — SELF_CONFIRMATION_NOT_ALLOWED or IDEMPOTENCY_KEY_REUSED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "IDEMPOTENCY_KEY_REUSED": {
+                    "value": {
+                      "title": "Idempotency key reused",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-reused",
+                      "status": 409,
+                      "code": "IDEMPOTENCY_KEY_REUSED",
+                      "instance": "/api/v1/reports",
+                      "detail": "Idempotency-Key was already used with a different request payload."
+                    }
+                  },
+                  "SELF_CONFIRMATION_NOT_ALLOWED": {
+                    "value": {
+                      "title": "Self confirmation not allowed",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:self-confirmation-not-allowed",
+                      "status": 409,
+                      "code": "SELF_CONFIRMATION_NOT_ALLOWED",
+                      "instance": "/api/v1/reports",
+                      "detail": "You cannot confirm your own report."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/photos": {
+      "post": {
+        "tags": [
+          "Photos"
+        ],
+        "summary": "Upload and sanitise a resident report photo (JPEG/PNG, max 5 MiB, returns 201 Created)",
+        "description": "Requires Role: `RESIDENT`. Strips all EXIF/GPS/XMP metadata before storing in Cloudinary. Returns `413 PHOTO_TOO_LARGE` if > 5 MiB, or `415 UNSUPPORTED_PHOTO_TYPE` if not JPEG/PNG.",
+        "operationId": "uploadPhoto",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhotoView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/photos"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/photos",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/photos",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/photos",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/photos",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/photos",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload Too Large — PHOTO_TOO_LARGE (> 5 MiB)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "PHOTO_TOO_LARGE": {
+                    "value": {
+                      "title": "Photo too large",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:photo-too-large",
+                      "status": 413,
+                      "code": "PHOTO_TOO_LARGE",
+                      "instance": "/api/v1/photos",
+                      "detail": "Uploaded photo exceeds the 5 MiB size limit."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported Media Type — UNSUPPORTED_PHOTO_TYPE (only JPEG and PNG allowed)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNSUPPORTED_PHOTO_TYPE": {
+                    "value": {
+                      "title": "Unsupported photo type",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unsupported-photo-type",
+                      "status": 415,
+                      "code": "UNSUPPORTED_PHOTO_TYPE",
+                      "instance": "/api/v1/photos",
+                      "detail": "Only JPEG and PNG photos are supported."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/auth/sessions": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Authenticate user and issue a Bearer session token",
+        "description": "Public endpoint (no Bearer token required). Validates email and password and returns a signed Bearer accessToken (8h TTL) along with the authenticated CurrentUserView.",
+        "operationId": "createSession",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated session created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/auth/sessions"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/auth/sessions",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/auth/sessions",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login alias for POST /api/v1/auth/sessions",
+        "description": "Public endpoint (no Bearer token required). Alias for POST /api/v1/auth/sessions returning the same SessionView (accessToken, tokenType, expiresAt, user).",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Authenticated session created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/auth/login"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/auth/login",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/auth/login",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/v1/wards": {
+      "get": {
+        "tags": [
+          "Wards & Streets"
+        ],
+        "summary": "List all wards ordered by name",
+        "description": "Requires `Authorization: Bearer <token>`.",
+        "operationId": "listWards",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WardView"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/wards"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/wards",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/wards",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/wards",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/wards",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/wards",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/wards/{wardId}/streets": {
+      "get": {
+        "tags": [
+          "Wards & Streets"
+        ],
+        "summary": "List streets belonging to a ward",
+        "description": "Requires `Authorization: Bearer <token>`. Returns `404 RESOURCE_NOT_FOUND` if `wardId` does not exist.",
+        "operationId": "listStreets",
+        "parameters": [
+          {
+            "name": "wardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StreetView"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/wards/{wardId}/streets"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/wards/{wardId}/streets",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/wards/{wardId}/streets",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/wards/{wardId}/streets",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/wards/{wardId}/streets",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/wards/{wardId}/streets",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/wards/{wardId}/hazards": {
+      "get": {
+        "tags": [
+          "Reports & Hazards"
+        ],
+        "summary": "List active ward hazards (blocked drains and current floods)",
+        "description": "Requires `Authorization: Bearer <token>`. Returns `WardHazardsView` containing active `BLOCKED_DRAIN` and `CURRENT` `FLOODED_ROAD` reports in the ward.",
+        "operationId": "listWardHazards",
+        "parameters": [
+          {
+            "name": "wardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WardHazardsView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/wards/{wardId}/hazards"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/wards/{wardId}/hazards",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/wards/{wardId}/hazards",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/wards/{wardId}/hazards",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/wards/{wardId}/hazards",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/wards/{wardId}/hazards",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/wards/{wardId}/dashboard": {
+      "get": {
+        "tags": [
+          "Authority Dashboard"
+        ],
+        "summary": "Get local-authority ward analytics dashboard for a date range",
+        "description": "Requires Role: `AUTHORITY` (returns `403 FORBIDDEN` for `RESIDENT` or `OPERATOR`). Date range `fromDate`..`toDate` is inclusive (max 31 days).",
+        "operationId": "getWardDashboard",
+        "parameters": [
+          {
+            "name": "wardId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WardDashboardView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/wards/{wardId}/dashboard"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/wards/{wardId}/dashboard",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/wards/{wardId}/dashboard",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/wards/{wardId}/dashboard",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/wards/{wardId}/dashboard",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/wards/{wardId}/dashboard",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get the authenticated user's profile and ward/street preferences",
+        "description": "Requires `Authorization: Bearer <token>`.",
+        "operationId": "getCurrentUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/users/me"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/users/me",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/users/me",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/users/me",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/users/me",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/users/me",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/reports/{reportId}": {
+      "get": {
+        "tags": [
+          "Reports & Hazards"
+        ],
+        "summary": "Get a single report by ID",
+        "description": "Requires `Authorization: Bearer <token>`. Returns the privacy-safe `ReportView`.",
+        "operationId": "getReport",
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/reports/{reportId}"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/reports/{reportId}",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/reports/{reportId}",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/reports/{reportId}",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/reports/{reportId}",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/reports/{reportId}",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — SELF_CONFIRMATION_NOT_ALLOWED or IDEMPOTENCY_KEY_REUSED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "IDEMPOTENCY_KEY_REUSED": {
+                    "value": {
+                      "title": "Idempotency key reused",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-reused",
+                      "status": 409,
+                      "code": "IDEMPOTENCY_KEY_REUSED",
+                      "instance": "/api/v1/reports/{reportId}",
+                      "detail": "Idempotency-Key was already used with a different request payload."
+                    }
+                  },
+                  "SELF_CONFIRMATION_NOT_ALLOWED": {
+                    "value": {
+                      "title": "Self confirmation not allowed",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:self-confirmation-not-allowed",
+                      "status": 409,
+                      "code": "SELF_CONFIRMATION_NOT_ALLOWED",
+                      "instance": "/api/v1/reports/{reportId}",
+                      "detail": "You cannot confirm your own report."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/photos/{photoId}": {
+      "get": {
+        "tags": [
+          "Photos"
+        ],
+        "summary": "Get sanitised photo metadata and resolved URL",
+        "description": "Requires `Authorization: Bearer <token>`. Readable by the photo owner or when attached as report evidence.",
+        "operationId": "getPhoto",
+        "parameters": [
+          {
+            "name": "photoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhotoView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/photos/{photoId}"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/photos/{photoId}",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/photos/{photoId}",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/photos/{photoId}",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/photos/{photoId}",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/photos/{photoId}",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/operators/me/streets": {
+      "get": {
+        "tags": [
+          "Operators"
+        ],
+        "summary": "List distinct streets scheduled for the authenticated operator in the date range",
+        "description": "Requires Role: `OPERATOR` (`Authorization: Bearer <token>`).\n- **How `fromDate` and `toDate` filter**: Returns only the distinct streets in the operator's assigned ward(s) (`operator_wards`) that have a scheduled pickup assigned to this authenticated operator in `collection_schedules` between `fromDate` and `toDate` (inclusive, max 31-day window).\n- If `fromDate` and `toDate` are omitted, defaults to today (in `Africa/Lagos`) through `today + 29 days`.\n",
+        "operationId": "listMyAssignedStreets",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "description": "Start date (ISO YYYY-MM-DD, inclusive). Defaults to today in Africa/Lagos if omitted.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "description": "End date (ISO YYYY-MM-DD, inclusive, max 30 days after fromDate). Defaults to fromDate + 29 days if omitted.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StreetView"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/operators/me/streets"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/operators/me/streets",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/operators/me/streets",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/operators/me/streets",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/operators/me/streets",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/operators/me/streets",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/collection-schedules": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "List collection schedules with derived collectionStatus (SCHEDULED, DONE, MISSED, DISPUTED)",
+        "description": "Requires `Authorization: Bearer <token>`. Date range `fromDate`..`toDate` is inclusive (max 31 days).",
+        "operationId": "listCollectionSchedules",
+        "parameters": [
+          {
+            "name": "wardId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "streetId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageCollectionScheduleView"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request — VALIDATION_FAILED or IDEMPOTENCY_KEY_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "VALIDATION_FAILED": {
+                    "value": {
+                      "fieldErrors": [
+                        {
+                          "field": "note",
+                          "message": "Note is required."
+                        }
+                      ],
+                      "title": "Validation failed",
+                      "type": "urn:ekowatch:problem:validation",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "code": "VALIDATION_FAILED",
+                      "detail": "Check the highlighted fields.",
+                      "status": 400,
+                      "instance": "/api/v1/collection-schedules"
+                    }
+                  },
+                  "IDEMPOTENCY_KEY_REQUIRED": {
+                    "value": {
+                      "title": "Idempotency key required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:idempotency-key-required",
+                      "status": 400,
+                      "code": "IDEMPOTENCY_KEY_REQUIRED",
+                      "instance": "/api/v1/collection-schedules",
+                      "detail": "Header Idempotency-Key is required for report creation."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized — UNAUTHENTICATED (missing, expired, or invalid credentials/token)",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "UNAUTHENTICATED": {
+                    "value": {
+                      "title": "Authentication required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:unauthenticated",
+                      "status": 401,
+                      "code": "UNAUTHENTICATED",
+                      "instance": "/api/v1/collection-schedules",
+                      "detail": "Valid authentication credentials are required."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — FORBIDDEN or WARD_ASSIGNMENT_REQUIRED",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "WARD_ASSIGNMENT_REQUIRED": {
+                    "value": {
+                      "title": "Ward assignment required",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:ward-assignment-required",
+                      "status": 403,
+                      "code": "WARD_ASSIGNMENT_REQUIRED",
+                      "instance": "/api/v1/collection-schedules",
+                      "detail": "You are not assigned to this ward."
+                    }
+                  },
+                  "FORBIDDEN": {
+                    "value": {
+                      "title": "Access denied",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:forbidden",
+                      "status": 403,
+                      "code": "FORBIDDEN",
+                      "instance": "/api/v1/collection-schedules",
+                      "detail": "You are not authorized to perform this action."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found — RESOURCE_NOT_FOUND",
+            "headers": {
+              "X-Request-Id": {
+                "description": "Request correlation ID",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "RESOURCE_NOT_FOUND": {
+                    "value": {
+                      "title": "Resource not found",
+                      "requestId": "d6c37192-5428-442d-a067-86c7336a842d",
+                      "type": "urn:ekowatch:problem:not-found",
+                      "status": 404,
+                      "code": "RESOURCE_NOT_FOUND",
+                      "instance": "/api/v1/collection-schedules",
+                      "detail": "The requested resource was not found."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdatePreferencesRequest": {
+        "type": "object",
+        "properties": {
+          "wardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "streetId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "streetId",
+          "wardId"
+        ]
+      },
+      "CurrentUserView": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "RESIDENT",
+              "OPERATOR",
+              "AUTHORITY"
+            ]
+          },
+          "wardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "streetId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CollectionView": {
+        "type": "object",
+        "properties": {
+          "collectionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "streetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "collectionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "collectionStatus": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "DONE",
+              "MISSED",
+              "DISPUTED"
+            ]
+          }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "ReportView": {
+        "type": "object",
+        "properties": {
+          "reportId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reportType": {
+            "type": "string",
+            "enum": [
+              "MISSED_PICKUP",
+              "ILLEGAL_DUMPING",
+              "BLOCKED_DRAIN",
+              "FLOODED_ROAD"
+            ]
+          },
+          "wardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "streetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "streetName": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "photoUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "collectionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "confirmationCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "confirmedByMe": {
+            "type": "boolean"
+          },
+          "lastEvidenceAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "floodStatus": {
+            "type": "string",
+            "enum": [
+              "CURRENT",
+              "EXPIRED"
+            ]
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "mapLocation": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "locationPrecision": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateReportRequest": {
+        "type": "object",
+        "properties": {
+          "reportType": {
+            "type": "string",
+            "enum": [
+              "MISSED_PICKUP",
+              "ILLEGAL_DUMPING",
+              "BLOCKED_DRAIN",
+              "FLOODED_ROAD"
+            ]
+          },
+          "streetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "note": {
+            "type": "string"
+          },
+          "photoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "collectionDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "PhotoView": {
+        "type": "object",
+        "properties": {
+          "photoId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "photoUrl": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateSessionRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "SessionView": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "tokenType": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "user": {
+            "$ref": "#/components/schemas/CurrentUserView"
+          }
+        }
+      },
+      "WardView": {
+        "type": "object",
+        "properties": {
+          "wardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "wardName": {
+            "type": "string"
+          }
+        }
+      },
+      "StreetView": {
+        "type": "object",
+        "properties": {
+          "streetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "wardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "streetName": {
+            "type": "string"
+          },
+          "mapLocation": {
+            "$ref": "#/components/schemas/Location"
+          }
+        }
+      },
+      "WardHazardsView": {
+        "type": "object",
+        "properties": {
+          "wardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "newestReportAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportView"
+            }
+          }
+        }
+      },
+      "OperatorPerformanceView": {
+        "type": "object",
+        "properties": {
+          "operatorId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "operatorName": {
+            "type": "string"
+          },
+          "scheduledPickupCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "completedPickupCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "missedPickupCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "disputedPickupCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "WardDashboardView": {
+        "type": "object",
+        "properties": {
+          "wardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fromDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "toDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "missedPickupCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "disputedPickupCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "blockedDrainCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "currentFloodCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "newestReportAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "operatorPerformance": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OperatorPerformanceView"
+            }
+          }
+        }
+      },
+      "PageReportView": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportView"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CollectionScheduleView": {
+        "type": "object",
+        "properties": {
+          "scheduleId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "wardId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "streetId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "streetName": {
+            "type": "string"
+          },
+          "collectionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "collectionStatus": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "DONE",
+              "MISSED",
+              "DISPUTED"
+            ]
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "missedReportCount": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PageCollectionScheduleView": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionScheduleView"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalElements": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "description": "Pass the accessToken from POST /api/v1/auth/sessions (or /api/v1/auth/login) as: Authorization: Bearer <accessToken>",
+        "name": "bearerAuth",
+        "scheme": "bearer",
+        "bearerFormat": "HMAC-SHA256"
+      }
+    }
+  }
+}

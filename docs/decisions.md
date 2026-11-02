@@ -103,20 +103,52 @@ _The sample report card part is reversed; see "Sample report card back in the la
 - **Why:** reverses the card part of "Landing page leaves out the sample activity" under its "Reverse if" condition: clearly labelled illustrative copy on the landing page isn't mock data. The ticker stays out.
 - **Agreed by:** Muizz Jamiu
 
-## Contract differences found in the deployed backend (2026-11-01)
+### 2026-11-02 · Ward office and operators get their ward from the data, not the user record
+- **Change:** the ward office (demo5) has `wardId: null`, but the dashboard and report list need a ward. The frontend uses the ward from `GET /wards`; if more than one ward comes back, it shows a ward picker. Operators also have `wardId: null`; they use the `wardId` on their assigned streets (`GET /operators/me/streets`). Residents keep using `CurrentUserView.wardId`.
+- **Why:** these are real records from the backend, not guesses, and the demo seeds have a single ward.
+- **Follow-up:** Muizz is asking the backend team to set demo5's `wardId`. Once set, the user's own `wardId` wins.
+- **Agreed by:** Muizz Jamiu
 
-Compared https://ekowatch-backend.onrender.com/v3/api-docs with the build plan. Needs Esther's answer; the frontend follows the deployed backend until then.
+### 2026-11-02 · Demo accounts and their password in the frontend bundle
+- **Change:** the sign-in page has a "Demo accounts" panel in three columns: Resident (Resident 1 = demo1, Resident 2 = demo2), Operator (Operator 1 = demo4, Operator 2 = demo8) and Ward office (demo5). Choosing one fills in the email and the shared password `DEMO@123` and moves focus to Sign in; it never signs in by itself. The accounts live only in `src/constants/demoAccounts.ts`.
+- **Why:** assessors and the demo audience can try every role without typing credentials. The layout follows FoodBridge's panel, inside the card under a divider as in `SignIn.dc.html`, with EkoWatch's tokens.
+- **Cost:** the demo emails and the shared password ship in the public JavaScript bundle. Acceptable only because the accounts are fictional demo accounts with no real data.
+- **Differs from:** CLAUDE.md's "one line per account showing role and email". The buttons show the account name; the email is in each button's accessible name and fills in the field when chosen.
+- **Left out:** demo3, demo6 and demo7 until their passwords work on the backend. demo8 has no assigned streets; that is noted here only, not on screen.
+- **Reverse if:** any account ever holds real data, or the backend stops seeding the demo accounts.
+- **Agreed by:** Muizz Jamiu
 
-- **`WardView.wardName` and `StreetView.streetName`** instead of the plan's `name`. Rename in the backend, or accept the deployed names in the plan.
-- **No error responses documented.** No 400, 401, 403, 404 or 409, and no `application/problem+json` shape. Check the real errors match plan section 9 and add them to the OpenAPI document.
-- **Status codes.** `POST /reports` shows 200; the plan says 201 with a `Location` header. `PUT .../collections/{collectionDate}` shows only 200; the plan says 201 for a first insert and 200 for a repeat.
-- **`Idempotency-Key` is not marked required** on `POST /reports`. The plan requires it and returns `IDEMPOTENCY_KEY_REQUIRED` without it.
-- **No authentication scheme documented.** Which endpoints need `Authorization: Bearer`?
-- **No required or nullable fields marked** in responses. The plan says nullable fields are always present with `null`.
-- **`X-Request-ID`** is not documented. Is it echoed back?
-- **`GET /operators/me/streets` takes optional `fromDate` and `toDate`.** These are not in the plan. What do they filter?
-- **`CurrentUserView` includes `email`** and **`PhotoView` includes `contentType` and `sizeBytes`.** These are extra fields, harmless; add them to the plan.
+## Contract differences found in the deployed backend
+
+### Checked again 2026-11-02 (openapi.json saved to the repo, plus live `curl`)
+
+Fixed since 2026-11-01, now matching the build plan:
+- Error responses are documented (400, 401, 403, 404, 409, 413, 415), and the `info.description` lists every stable `code`. Live 400, 401, 403 and 404 bodies are `application/problem+json` with `type`, `title`, `status`, `code`, `detail`, `instance`, `requestId`, and `fieldErrors` (`[{ field, message }]`) on validation failures.
+- `POST /reports` documents 201; `PUT .../collections/{collectionDate}` documents 200 and 201.
+- `Idempotency-Key` is marked required on `POST /reports`.
+- Authentication is documented: bearer token on everything except `POST /auth/sessions` and `POST /auth/login`.
+
+Still open, or new:
+- **`WardView.wardName` and `StreetView.streetName`** instead of the plan's `name`. The frontend uses the deployed names.
+- **`ProblemDetail` is referenced but not defined** in `components.schemas`, so the error body shape exists only in the description and in live responses.
+- **No required or nullable fields marked** in any schema. The frontend types nullability from the plan and from live responses (`src/types/ekowatch.ts`).
+- **`GET /collection-schedules` requires `wardId`** as well as `fromDate` and `toDate`. Without it the backend returns 400 `VALIDATION_FAILED`.
+- **`GET /operators/me/streets?fromDate&toDate`** returns only the assigned streets that have a schedule in that range (without dates, all assigned streets). It returns `StreetView[]`, with no collection status, so "Today's streets" also reads `GET /collection-schedules` for today.
+- **`ReportView.mapLocation`** is present. It is the street's point (`locationPrecision: 'STREET'`), not the reporter's position.
+- **Extra endpoint `POST /auth/login`**, same body and response as `POST /auth/sessions`. The frontend uses `createSession` only.
+- **CORS preflights sometimes hang.** On 2026-11-02, `OPTIONS /api/v1/auth/sessions` from `http://localhost:4173` got no answer within 40 s twice in a row, then took 22 s, then 0.8 s; the `POST` itself answered in 3 to 5 s. While a preflight hangs, the browser's sign-in waits with it (the form says EkoWatch may be waking up; the request gives up after 90 s). For Esther: check whether preflights reach the app while it is waking, and whether `Access-Control-Max-Age` (3600) is being honoured.
+- **Allowed local origins:** `http://localhost:5173` and `http://localhost:4173` pass the preflight; `http://localhost:5174` gets 403. The Qocent address will need adding when it exists.
+- **`X-Request-ID`** is not documented. Each error body carries a `requestId`.
+- **`CurrentUserView` includes `email`** and **`PhotoView` includes `contentType` and `sizeBytes`.** Extra fields, harmless; add them to the plan.
 - **No `reportedByMe` on `ReportView`.** "You reported this" stays out of the interface.
+
+### Demo accounts on the live backend (2026-11-02)
+
+For the backend team (Adedayo). Password `DEMO@123` for all.
+- Sign in: demo1, demo2 (RESIDENT, with ward and street), demo4, demo8 (OPERATOR), demo5 (AUTHORITY).
+- **401 `UNAUTHENTICATED`: demo3, demo6 (RESIDENT) and demo7 (OPERATOR).** Left off the sign-in panel until they work.
+- **demo8 has no assigned streets**, so its "Today's streets" is empty.
+- **demo5 has `wardId: null`** (see the ward decision above).
 
 ## Open questions (need a decision before the related slice)
 
