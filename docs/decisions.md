@@ -219,7 +219,8 @@ Still open, or new:
 - 2026-11-02 22:12 UTC, before step 3: identical.
 - 2026-11-02 22:38 UTC, before step 4: identical.
 - 2026-11-02 22:49 UTC, before step 6: identical.
-- **`POST /photos` answers 500 `INTERNAL_ERROR`** (2026-11-02, about 22:40 UTC) for a valid 272 KB JPEG, from the app and from plain `curl -F file=@photo.jpg;type=image/jpeg` alike. Request IDs `ba38cbf5-886a-44ca-aca7-8fe93dc1f51b` and `bb49584f-4098-4979-84a4-b3b82d2971c8`, for Esther and Adedayo. Reports without a photo work.
+- 2026-11-02 23:03 UTC, end of the run: identical.
+- **`POST /photos` answers 500 `INTERNAL_ERROR`** (2026-11-02, about 22:40 UTC) for a valid 272 KB JPEG, from the app and from plain `curl -F file=@photo.jpg;type=image/jpeg` alike. Request IDs `ba38cbf5-886a-44ca-aca7-8fe93dc1f51b`, `bb49584f-4098-4979-84a4-b3b82d2971c8` and, retried at 23:00 UTC, `23a596e5-ac82-4f7b-b20b-24fa70a64be9`, for Esther and Adedayo. Reports without a photo work.
 
 ### Demo accounts on the live backend (2026-11-02)
 
