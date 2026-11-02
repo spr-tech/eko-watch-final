@@ -26,6 +26,20 @@ describe('describeError by status', () => {
     })
   })
 
+  it('tells an operator when a street is not theirs, and a resident to choose a street', () => {
+    expect(describeError({ status: 403, code: 'WARD_ASSIGNMENT_REQUIRED', operation: 'recordCollection' }).title).toBe(
+      "This street isn't assigned to you.",
+    )
+    expect(describeError({ status: 403, code: 'WARD_ASSIGNMENT_REQUIRED' }).title).toBe('Choose your ward and street first')
+  })
+
+  it('says so when the reply holds a value this app does not know', () => {
+    expect(describeError({ status: 'UNEXPECTED_REPLY' })).toMatchObject({
+      kind: 'unexpected',
+      title: "EkoWatch sent a reply this app doesn't recognise.",
+    })
+  })
+
   it('falls back to a server message for anything else', () => {
     expect(describeError({ status: 'PARSING_ERROR' }).kind).toBe('server')
     expect(describeError({ status: 418 }).kind).toBe('server')

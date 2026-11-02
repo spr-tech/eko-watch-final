@@ -141,6 +141,35 @@ _The sample report card part is reversed; see "Sample report card back in the la
 - **Why:** with both field errors showing, the page scrolled by 24px at 390 × 760.
 - **Agreed by:** Muizz Jamiu
 
+## Overnight run, 2026-11-02 to 11-03 (core loop steps 2 to 6)
+
+Every entry here was proposed by Claude Code overnight, without a chance to ask. Each one is "Agreed by: pending" until reviewed.
+
+### 2026-11-02 · `feat/core-loop-pages` starts from the sign-in work, not bare `main`
+- **Change:** the branch was created from `main`, then moved (before any commit) to the tip of `feat/sign-in-polish`, because `main` has no sign-in, no `openapi.json` and no view types, so nothing could be tested on the live backend. `git merge` is on the deny list, so nothing was merged; the branch simply starts later in the same history.
+- **Cost:** until `feat/core-loop` and `feat/sign-in-polish` are merged, the pull request for this branch also shows their commits.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Reports filters: "Waste" split into two chips
+- **Change:** the chips are All, Flooding, Drains, Missed pickups and Dumping. The design's "Waste" chip covers two report types, but `GET /reports` takes one `reportType`. "Current floods only" selects Flooding and sends `reportType=FLOODED_ROAD&floodStatus=CURRENT`. Filters and page live in the address.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Reports header without "Newest report: 12 min ago"
+- **Change:** left out. `GET /reports` sorted by confirmations gives no server timestamp for the newest report; showing one would need a second request or a time made in the browser.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Confirm only on report detail, and paging under the list
+- **Change:** the list shows the count and "You confirmed this", but the Confirm button is on the report's page only (the design also has one on each row). Lists over 20 reports get Previous / Page x of y / Next; the design has no paging.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Wording added for states the design doesn't draw
+- **Change:** ward office and operators with an empty list: "No reports in your ward yet. Reports from residents will show here as they come in." (no Report a problem button). Current floods only with no results: "No current flood reports. That does not mean the roads are clear, only that no one has reported flooding recently." Report page: a current flood says "Expires in 3 h unless someone confirms it again"; an expired one says "No recent confirmations. This doesn't mean the road is clear."; a missed pickup says "Collection day missed: Friday 30 October". Operators: "Operators see confirmations but do not confirm reports." A reply with an enum value the app doesn't know: "EkoWatch sent a reply this app doesn't recognise." A ward office that can see several wards gets a "Choose a ward" list (`?ward=` in the address).
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
+### 2026-11-02 · Step 5 built before steps 3 and 4
+- **Change:** the operator's Today's streets (step 5) was built straight after step 2. The one allowed operator write is "today's Fictional Bamboo Street", and Bamboo Street is only scheduled on 2 November; after midnight in Lagos "today" would no longer include it. Commits stay one per step.
+- **Proposed by Claude Code overnight, Agreed by:** pending
+
 ## Contract differences found in the deployed backend
 
 ### Checked again 2026-11-02 (openapi.json saved to the repo, plus live `curl`)
@@ -164,6 +193,11 @@ Still open, or new:
 - **`X-Request-ID`** is not documented. Each error body carries a `requestId`.
 - **`CurrentUserView` includes `email`** and **`PhotoView` includes `contentType` and `sizeBytes`.** Extra fields, harmless; add them to the plan.
 - **No `reportedByMe` on `ReportView`.** "You reported this" stays out of the interface.
+
+### Overnight contract checks (live `/v3/api-docs` against `openapi.json`)
+
+- 2026-11-02 17:40 UTC, before step 2: identical.
+- Found while wiring step 2 and 5 (live `curl`): `GET /operators/me/streets` for demo8, the operator with no streets, answers `200 []`, not 403 `WARD_ASSIGNMENT_REQUIRED`. `GET /collection-schedules` returns a `Page` (`items`, `page`, `size`, `totalElements`, `totalPages`), like `GET /reports`.
 
 ### Demo accounts on the live backend (2026-11-02)
 

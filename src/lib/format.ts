@@ -40,6 +40,24 @@ export function lagosDate(instant: Date): string {
   return lagosDay.format(instant)
 }
 
+const clock = new Intl.DateTimeFormat('en-GB', { timeZone: TIME_ZONE, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+
+// "09:58": the Lagos time of day of an instant from the server.
+export function formatLagosTime(instant: string): string {
+  const date = new Date(instant)
+  if (Number.isNaN(date.getTime())) throw new Error(`Not an ISO 8601 instant: ${instant}`)
+  return clock.format(date)
+}
+
+// A calendar date (YYYY-MM-DD) moved by a whole number of days: ("2026-11-02", -30) gives
+// "2026-10-03". Calendar arithmetic only, so no timezone or daylight saving is involved.
+export function shiftDate(date: string, days: number): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date)
+  if (!match) throw new Error(`Not a YYYY-MM-DD date: ${date}`)
+  const shifted = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]) + days))
+  return shifted.toISOString().slice(0, 10)
+}
+
 // Whole Lagos calendar days from a to b (b later gives a positive number).
 function lagosDaysBetween(a: Date, b: Date): number {
   return Math.round((Date.parse(lagosDate(b)) - Date.parse(lagosDate(a))) / DAY_MS)
@@ -70,6 +88,12 @@ export function formatAge(instant: string, now: Date): string {
   return `${part(parts, 'day')} ${part(parts, 'month')}`
 }
 
+// formatAge for use inside a sentence: "reported 3 h ago", but "reported on 28 October".
+export function formatWhen(instant: string, now: Date): string {
+  const age = formatAge(instant, now)
+  return /^\d/.test(age) && !age.endsWith('ago') ? `on ${age}` : age
+}
+
 // A flood report's countdown from its expiresAt: "Expires in 3 h 40 min",
 // "Expires in 40 min", then "Expired".
 export function formatFloodCountdown(expiresAt: string, now: Date): string {
@@ -88,5 +112,5 @@ export function formatFloodCountdown(expiresAt: string, now: Date): string {
 // A report's evidence age, from the server's lastEvidenceAt. Reports are community
 // evidence, so no reporter is named: "Community report · last confirmed 2 h ago".
 export function formatEvidenceAge(lastEvidenceAt: string, now: Date): string {
-  return `Community report · last confirmed ${formatAge(lastEvidenceAt, now)}`
+  return `Community report · last confirmed ${formatWhen(lastEvidenceAt, now)}`
 }

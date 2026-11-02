@@ -2,17 +2,20 @@
 import { selectCurrentUser } from '@/app/sessionSlice'
 import { demoRoleLabel, initials } from '@/components/layout/account'
 import { useAppSelector } from '@/hooks/useAppStore'
+import { useWard } from '@/hooks/useWard'
 import { useSignOut } from '@/hooks/useSignOut'
 import type { Role } from '@/types/ekowatch'
 
 export function TopBar({ role }: { role: Role }) {
   const user = useAppSelector(selectCurrentUser)
   const signOut = useSignOut()
+  const ward = useWard()
+  const wardName = ward.status === 'picked' ? ward.wardName : null
   return (
     <header className="hidden min-h-14 items-center justify-between gap-4 border-b border-border bg-bg px-8 md:flex">
-      {/* TODO(slice-1): the ward name (WardView.wardName for the user's wardId, from
-          listWards). Empty until then, never a guess (docs/design/README.md, correction 1). */}
-      <div />
+      {/* The ward name from GET /wards; empty until it loads, never a guess
+          (docs/design/README.md, correction 1). */}
+      <p className="min-w-0 truncate font-extrabold text-text">{wardName}</p>
       <div className="flex items-center gap-3">
         {user && (
           <span
