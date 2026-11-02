@@ -3,10 +3,13 @@
 // demo only, with sources and credits pending, so there is no caption (docs/decisions.md).
 // The demo notice sits directly under the card, in the right column.
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, Navigate, useSearchParams } from 'react-router'
+import { selectCurrentUser } from '@/app/sessionSlice'
 import logoOnDark from '@/assets/ekowatch-logo-horizontal-on-dark.svg'
 import { DemoNotice } from '@/components/layout/DemoNotice'
+import { signInDestination } from '@/constants/roles'
 import { ROUTES } from '@/constants/routes'
+import { useAppSelector } from '@/hooks/useAppStore'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { cn } from '@/lib/cn'
@@ -118,6 +121,10 @@ function SignInPhotos() {
 
 export function SignInPage() {
   useDocumentTitle('Sign in')
+  const user = useAppSelector(selectCurrentUser)
+  const [searchParams] = useSearchParams()
+  // Signed in (just now, or already): go to ?next= if the role may open it, else home.
+  if (user) return <Navigate to={signInDestination(user.role, searchParams.get('next'))} replace />
   return (
     <div className="flex flex-1 flex-col md:flex-row">
       <div className="on-dark relative h-37.5 shrink-0 overflow-hidden bg-text text-white md:h-auto md:min-h-130 md:flex-[1.1_1_0] short:md:min-h-0">

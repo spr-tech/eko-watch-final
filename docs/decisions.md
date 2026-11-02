@@ -109,6 +109,15 @@ _The sample report card part is reversed; see "Sample report card back in the la
 - **Follow-up:** Muizz is asking the backend team to set demo5's `wardId`. Once set, the user's own `wardId` wins.
 - **Agreed by:** Muizz Jamiu
 
+### 2026-11-02 · Demo accounts and their password in the frontend bundle
+- **Change:** the sign-in page has a "Demo accounts" panel in three columns: Resident (Resident 1 = demo1, Resident 2 = demo2), Operator (Operator 1 = demo4, Operator 2 = demo8) and Ward office (demo5). Choosing one fills in the email and the shared password `DEMO@123` and moves focus to Sign in; it never signs in by itself. The accounts live only in `src/constants/demoAccounts.ts`.
+- **Why:** assessors and the demo audience can try every role without typing credentials. The layout follows FoodBridge's panel, inside the card under a divider as in `SignIn.dc.html`, with EkoWatch's tokens.
+- **Cost:** the demo emails and the shared password ship in the public JavaScript bundle. Acceptable only because the accounts are fictional demo accounts with no real data.
+- **Differs from:** CLAUDE.md's "one line per account showing role and email". The buttons show the account name; the email is in each button's accessible name and fills in the field when chosen.
+- **Left out:** demo3, demo6 and demo7 until their passwords work on the backend. demo8 has no assigned streets; that is noted here only, not on screen.
+- **Reverse if:** any account ever holds real data, or the backend stops seeding the demo accounts.
+- **Agreed by:** Muizz Jamiu
+
 ## Contract differences found in the deployed backend
 
 ### Checked again 2026-11-02 (openapi.json saved to the repo, plus live `curl`)
@@ -127,6 +136,8 @@ Still open, or new:
 - **`GET /operators/me/streets?fromDate&toDate`** returns only the assigned streets that have a schedule in that range (without dates, all assigned streets). It returns `StreetView[]`, with no collection status, so "Today's streets" also reads `GET /collection-schedules` for today.
 - **`ReportView.mapLocation`** is present. It is the street's point (`locationPrecision: 'STREET'`), not the reporter's position.
 - **Extra endpoint `POST /auth/login`**, same body and response as `POST /auth/sessions`. The frontend uses `createSession` only.
+- **CORS preflights sometimes hang.** On 2026-11-02, `OPTIONS /api/v1/auth/sessions` from `http://localhost:4173` got no answer within 40 s twice in a row, then took 22 s, then 0.8 s; the `POST` itself answered in 3 to 5 s. While a preflight hangs, the browser's sign-in waits with it (the form says EkoWatch may be waking up; the request gives up after 90 s). For Esther: check whether preflights reach the app while it is waking, and whether `Access-Control-Max-Age` (3600) is being honoured.
+- **Allowed local origins:** `http://localhost:5173` and `http://localhost:4173` pass the preflight; `http://localhost:5174` gets 403. The Qocent address will need adding when it exists.
 - **`X-Request-ID`** is not documented. Each error body carries a `requestId`.
 - **`CurrentUserView` includes `email`** and **`PhotoView` includes `contentType` and `sizeBytes`.** Extra fields, harmless; add them to the plan.
 - **No `reportedByMe` on `ReportView`.** "You reported this" stays out of the interface.
