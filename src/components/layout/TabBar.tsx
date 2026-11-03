@@ -1,4 +1,4 @@
-// Phone tab bar, stuck to the bottom of the screen. The resident's Report tab is always
+// Phone tab bar, fixed below the scrolling content (AppLayout). The resident's Report tab is always
 // green; the current tab is dark.
 import { Link, useLocation } from 'react-router'
 import { NavIcon } from '@/components/layout/NavIcons'
@@ -16,7 +16,7 @@ export function TabBar({ role }: { role: Role }) {
     : items
 
   return (
-    <nav aria-label="Main" className="sticky bottom-0 z-10 flex gap-1.5 border-t border-border bg-bg px-2.5 pt-1.5 pb-2.5 md:hidden">
+    <nav aria-label="Main" className="z-10 flex flex-none gap-1.5 border-t border-border bg-bg px-2.5 pt-1.5 pb-2.5 md:hidden">
       {tabs.map((tab) => {
         const isActive = isNavActive(pathname, tab.to)
         return (

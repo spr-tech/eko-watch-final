@@ -11,7 +11,7 @@ export function Sidebar({ role }: { role: Role }) {
   const { action, items } = ROLE_NAV[role]
   const { pathname } = useLocation()
   return (
-    <aside className="on-dark hidden w-58 flex-none flex-col gap-4.5 bg-sidebar px-3.5 py-4.5 text-on-sidebar md:flex">
+    <aside className="on-dark hidden w-58 flex-none flex-col gap-4.5 overflow-y-auto bg-sidebar px-3.5 py-4.5 text-on-sidebar md:flex">
       <Link to={ROUTES.home} aria-label="EkoWatch home" className="self-start rounded-sm px-1">
         <img src={logoOnDark} alt="" className="h-8 w-auto" />
       </Link>
