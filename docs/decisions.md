@@ -187,6 +187,19 @@ Every entry here was proposed by Claude Code overnight, without a chance to ask.
 - **Change:** the operator's Today's streets (step 5) was built straight after step 2. The one allowed operator write is "today's Fictional Bamboo Street", and Bamboo Street is only scheduled on 2 November; after midnight in Lagos "today" would no longer include it. Commits stay one per step.
 - **Proposed by Claude Code overnight, Agreed by:** pending
 
+### 2026-11-03 · Report list sort
+
+- `GET /reports` takes `sort` (`CONFIRMATIONS` or `NEWEST`, server default `CONFIRMATIONS`) in `openapi.json`, so sorting is done on the server, never on the loaded page.
+- The list now defaults to **Newest first**; **Most confirmed** is the other choice, kept in the address as `?sort=confirmed`. The app always sends `sort` explicitly, so the server default doesn't matter. The subtitle says which order is showing. Agreed by Muizz (2026-11-03).
+- Expired floods: "Current floods only" already sends `reportType=FLOODED_ROAD&floodStatus=CURRENT`, so no separate filter was added.
+
+### 2026-11-03 · Cache strategy (RTK Query)
+
+- **Provides tags:** `listReports` gives `Report:LIST` plus `Report:<id>` for each row; `getReport` gives `Report:<id>`; `listCollectionSchedules` gives `Schedule:LIST`; `getWardDashboard` gives `Dashboard:LIST`. `listWards`, `listStreets` and `listMyAssignedStreets` have no tags; they only change when the seeds do.
+- **Invalidates:** `createReport` invalidates `Report:LIST`, `Hazards:LIST` and `Dashboard:LIST`, even after a failure, because a lost reply may still have saved the report. `confirmReport` invalidates the same three, on success only; it also patches `getReport` at once and writes the server's report back. `recordCollection` invalidates `Schedule:LIST` and `Dashboard:LIST`. `Hazards` and `CurrentUser` are declared but nothing provides them yet.
+- **keepUnusedDataFor:** RTK Query's default, 60 s. A screen opened again within a minute shows its cached data first.
+- **Refetching:** `setupListeners` is wired in `store.ts`, but no endpoint turns on `refetchOnFocus`, `refetchOnReconnect` or `refetchOnMountOrArgChange`. A screen refetches when a tag it holds is invalidated, or when its cache entry has expired or was removed. An invalidated query that no screen is using is dropped from the cache, so the next visit fetches fresh. For example, a resident who sends a report and returns to Reports sees it without refreshing.
+
 ## Contract differences found in the deployed backend
 
 ### Checked again 2026-11-02 (openapi.json saved to the repo, plus live `curl`)

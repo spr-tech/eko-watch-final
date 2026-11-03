@@ -1,5 +1,5 @@
-// /reports (Reports.dc.html): the ward's reports, most-confirmed first, with the type
-// chips and "Current floods only". Filters and page live in the address, so Back and a
+// /reports (Reports.dc.html): the ward's reports, newest or most-confirmed first, with the
+// type chips and "Current floods only". Sort, filters and page live in the address, so Back and a
 // refresh keep them. Residents see "You confirmed this" on their confirmed reports; the
 // ward office and operators see the list read-only (docs/design/README.md correction 6).
 import { Link, useSearchParams } from 'react-router'
@@ -19,7 +19,9 @@ import {
   confirmationWord,
   parsePage,
   parseReportFilter,
+  parseReportSort,
   REPORT_FILTERS,
+  REPORT_SORTS,
   reportListArgs,
   type ReportFilter,
 } from '@/lib/reports'
@@ -70,9 +72,10 @@ export function ReportListView({ wardId, role }: { wardId: string; role: Role })
   const [params, setParams] = useSearchParams()
   const filter = parseReportFilter(params.get('type'))
   const currentOnly = params.get('current') === '1'
+  const sort = parseReportSort(params.get('sort'))
   const page = parsePage(params.get('page'))
   const { data, error, isLoading, isFetching, refetch } = useListReportsQuery(
-    reportListArgs(wardId, filter, currentOnly, page),
+    reportListArgs(wardId, filter, currentOnly, sort, page),
   )
 
   // Changing a filter goes back to the first page; the ward (if chosen) is kept.
@@ -87,6 +90,12 @@ export function ReportListView({ wardId, role }: { wardId: string; role: Role })
       if (value === 'ALL') next.delete('type')
       else next.set('type', value)
       if (value !== 'FLOODED_ROAD') next.delete('current')
+    })
+  }
+  function pickSort(param: string | null) {
+    update((next) => {
+      if (param) next.set('sort', param)
+      else next.delete('sort')
     })
   }
   function toggleCurrent() {
@@ -227,6 +236,27 @@ export function ReportListView({ wardId, role }: { wardId: string; role: Role })
           </span>
           Current floods only
         </button>
+        <div role="group" aria-label="Sort reports" className="flex flex-wrap items-center gap-2 sm:ml-auto">
+          {REPORT_SORTS.map((s) => {
+            const on = s.value === sort
+            return (
+              <button
+                key={s.value}
+                type="button"
+                aria-pressed={on}
+                onClick={() => pickSort(s.param)}
+                className={cn(
+                  chipBase,
+                  on
+                    ? 'border-2 border-primary bg-primary-light font-extrabold text-primary'
+                    : 'border border-border-input bg-bg font-bold text-text hover:bg-surface-hover',
+                )}
+              >
+                {s.label}
+              </button>
+            )
+          })}
+        </div>
       </div>
       {body}
     </>
