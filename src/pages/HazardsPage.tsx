@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '@/components/common/PlaceholderPage'
+import { ComingSoonPage } from '@/components/common/ComingSoonPage'
 
 export function HazardsPage() {
-  return <PlaceholderPage title="Hazards" component="HazardsPage" />
+  return <ComingSoonPage title="Hazards" description="A ward-wide view of blocked drains and current floods." />
 }

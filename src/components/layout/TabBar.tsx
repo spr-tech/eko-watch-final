@@ -2,6 +2,7 @@
 // green; the current tab is dark.
 import { Link, useLocation } from 'react-router'
 import { NavIcon } from '@/components/layout/NavIcons'
+import { SoonBadge } from '@/components/layout/SoonBadge'
 import { isNavActive, ROLE_NAV, type NavItem } from '@/constants/roles'
 import type { Role } from '@/types/ekowatch'
 
@@ -32,7 +33,10 @@ export function TabBar({ role }: { role: Role }) {
                   : `${base} font-bold text-text`
             }
           >
-            <NavIcon name={tab.icon} />
+            <span className="relative">
+              <NavIcon name={tab.icon} />
+              {tab.comingSoon && <SoonBadge className="absolute -top-1.5 left-4" />}
+            </span>
             {tab.label}
           </Link>
         )

@@ -3,6 +3,7 @@
 import { Link, useLocation } from 'react-router'
 import logoOnDark from '@/assets/ekowatch-logo-horizontal-on-dark.svg'
 import { NavIcon } from '@/components/layout/NavIcons'
+import { SoonBadge } from '@/components/layout/SoonBadge'
 import { isNavActive, ROLE_NAV } from '@/constants/roles'
 import { ROUTES } from '@/constants/routes'
 import type { Role } from '@/types/ekowatch'
@@ -41,6 +42,7 @@ export function Sidebar({ role }: { role: Role }) {
                 >
                   <NavIcon name={item.icon} />
                   {item.label}
+                  {item.comingSoon && <SoonBadge className="ml-auto" />}
                 </Link>
               </li>
             )
