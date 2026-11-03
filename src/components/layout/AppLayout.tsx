@@ -2,7 +2,11 @@
 // Desktop: blue sidebar, white top bar, and the demo notice below the page content in
 // the main column. Phone: blue top bar, the demo notice, then the bottom tab bar, so the
 // notice is never hidden behind it. The switch is CSS only (md:).
-import { Outlet } from 'react-router'
+// The frame is exactly one screen tall (100dvh) and never scrolls itself: the sidebar,
+// the top bars and the tab bar stay put, and only the content column between them
+// scrolls, with its own scrollbar.
+import { useEffect, useRef } from 'react'
+import { Outlet, useLocation } from 'react-router'
 import { DemoBanner } from '@/components/layout/DemoBanner'
 import { PhoneTopBar } from '@/components/layout/PhoneTopBar'
 import { Sidebar } from '@/components/layout/Sidebar'
@@ -16,15 +20,24 @@ const MAIN_ID = 'main-content'
 // Rendered by RequireSession only when there is a session, so there is a role.
 export function AppLayout() {
   const role = useRole()
+  const { pathname } = useLocation()
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  // The window no longer scrolls, so the browser can't reset it: start each new page at
+  // the top of the content column.
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0, left: 0 })
+  }, [pathname])
+
   if (!role) return null
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex h-dvh overflow-hidden">
       <SkipLink targetId={MAIN_ID} />
-      <div className="flex flex-1">
-        <Sidebar role={role} />
-        <div className="flex min-w-0 flex-1 flex-col">
-          <PhoneTopBar role={role} />
-          <TopBar role={role} />
+      <Sidebar role={role} />
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <PhoneTopBar role={role} />
+        <TopBar role={role} />
+        <div ref={scrollRef} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           <main
             id={MAIN_ID}
             tabIndex={-1}
@@ -33,8 +46,8 @@ export function AppLayout() {
             <Outlet />
           </main>
           <DemoBanner />
-          <TabBar role={role} />
         </div>
+        <TabBar role={role} />
       </div>
     </div>
   )
