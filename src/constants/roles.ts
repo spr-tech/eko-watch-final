@@ -6,7 +6,8 @@ import type { NavIconName } from '@/components/layout/NavIcons'
 import { ROUTES } from '@/constants/routes'
 import type { Role } from '@/types/ekowatch'
 
-export type NavItem = { label: string; to: string; icon: NavIconName }
+// comingSoon marks a page that isn't built yet; the menus show a "Soon" badge on it.
+export type NavItem = { label: string; to: string; icon: NavIconName; comingSoon?: boolean }
 
 type RoleNav = {
   // Where the role lands, and what the no-access view sends them back to.
@@ -18,8 +19,8 @@ type RoleNav = {
 }
 
 const reports: NavItem = { label: 'Reports', to: ROUTES.reports, icon: 'reports' }
-const hazards: NavItem = { label: 'Hazards', to: ROUTES.hazards, icon: 'hazards' }
-const myStreet: NavItem = { label: 'My street', to: ROUTES.collections, icon: 'street' }
+const hazards: NavItem = { label: 'Hazards', to: ROUTES.hazards, icon: 'hazards', comingSoon: true }
+const myStreet: NavItem = { label: 'My street', to: ROUTES.collections, icon: 'street', comingSoon: true }
 const todaysStreets: NavItem = { label: "Today's streets", to: ROUTES.operatorCollections, icon: 'streets' }
 const dashboard: NavItem = { label: 'Dashboard', to: ROUTES.authorityDashboard, icon: 'dashboard' }
 

@@ -1,5 +1,5 @@
-import { PlaceholderPage } from '@/components/common/PlaceholderPage'
+import { ComingSoonPage } from '@/components/common/ComingSoonPage'
 
 export function CollectionSchedulePage() {
-  return <PlaceholderPage title="My street" component="CollectionSchedulePage" />
+  return <ComingSoonPage title="My street" description="Collection days and recent reports for your street." />
 }
